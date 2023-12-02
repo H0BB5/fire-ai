@@ -1,0 +1,104 @@
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Technician {
+  id     String @id @default(uuid())
+  userId String @unique
+  name   String
+  email  String @unique
+
+  tags      Tag[]
+  customers Customer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// When a Tag is created this is the customer that is created
+model Customer {
+  id           String     @id @default(uuid())
+  name         String
+  address      String
+  location     String
+  // Tags associated with this customer
+  tags         Tag[]
+  // Technician that created this customer
+  technicianId String
+  technician   Technician @relation(fields: [technicianId], references: [id])
+  // Info (provided by Technician) - optional
+  contactName  String
+  contactPhone String
+  contactEmail String
+  // timestamps
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  deletedAt    DateTime?
+
+  // indexes
+  @@index([technicianId])
+}
+
+// When a tag is created a customer is created 
+model Tag {
+  id             String         @id @default(uuid())
+  // Technician who created this tag
+  technicianId   String
+  technician     Technician     @relation(fields: [technicianId], references: [id])
+  // Customer this tag is associated with
+  customerId     String
+  customer       Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  // These are the details found on a tag (provided by Technician)
+  // Tag Info:
+  name           String
+  type           String
+  location       String
+  expirationDate DateTime
+  serialNumber   String
+  rating         String
+  // photos:
+  photoFrontUrl  String
+  photoBackUrl   String
+  // Sales cycle:
+  status         String
+  // Customer Info:
+  customerContact String
+  customerEmail   String
+  customerPhone   String
+  technicianNotes String
+  // Notification:
+  notification   Notification[]
+  // timestamps:
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  deletedAt      DateTime?
+
+  @@index([technicianId])
+  @@index([customerId])
+}
+
+// Notification model for sending notifications to technicians
+model Notification {
+  id    String @id @default(uuid())
+  tagId String
+  tag   Tag    @relation(fields: [tagId], references: [id])
+
+  // Notification Info:
+  title String
+  body  String
+
+  status   String
+  sendDate DateTime
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([tagId])
+}
