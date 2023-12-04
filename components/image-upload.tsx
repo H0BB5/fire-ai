@@ -43,9 +43,9 @@ export const UploadThing = () => {
         <div className="relative h-40 w-40 flex flex-col items-center justify-center">
           <div className={cn(photo ? `hidden` : `flex flex-col items-center`)}>
             <div className="flex w-1/2 justify-around mb-2">
-              <Camera color="#3c3c3c" />
+              <Camera className="h-5 w-5" />
               /
-              <Upload color="#3c3c3c" />
+              <Upload className="h-5 w-5" />
             </div>
             <UploadButton
               // content={{
