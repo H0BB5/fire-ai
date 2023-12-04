@@ -75,7 +75,7 @@ export const Tags = ({ data }: TagProps) => {
             tag.id === tagId ? "bg-primary/25" : "bg-primary/10"
           )}
         >
-          {tag.expirationDate.toDateString()}
+          {tag.name}
         </button>
       ))}
     </div>

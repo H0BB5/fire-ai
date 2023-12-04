@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu, Sparkles } from "lucide-react";
+import Image from "next/image";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
@@ -17,17 +18,16 @@ const font = Poppins({
 export const Navbar = () => {
   return (
     <div className="fixed w-full z-50 flex justify-between py-2 px-4 border-b border-primary/10 bg-secondary h-16">
+      <MobileSidebar />
+
       <div className="flex items-center">
-        <MobileSidebar />
         <Link href="/">
-          <h1
-            className={cn(
-              "hidden md:block text-xl md:text-3xl font-bold text-primary",
-              font.className
-            )}
-          >
-            Fire Safety
-          </h1>
+          <Image
+            src="/alexander-safety.png"
+            alt="Alexander Safety Logo"
+            width={80}
+            height={55}
+          />
         </Link>
       </div>
       <div className="flex items-center gap-x-3">

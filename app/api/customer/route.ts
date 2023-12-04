@@ -28,7 +28,6 @@ export async function POST(req: Request) {
     if (!businessName || !address || !type || !location || !serial || !rating) {
       return new NextResponse("Bad Request", { status: 400 });
     }
-    console.log("Technician ID:", technician.id); // Debugging log
 
     let technicianRecord = await prismadb.technician.findUnique({
       where: { email: technician.emailAddresses[0].emailAddress },
@@ -45,14 +44,11 @@ export async function POST(req: Request) {
       });
     }
 
-    console.log("Technician Record: ", technicianRecord);
-
     // TODO: Check if customer already exists
     // Check if customer already exists
     let customerData = await prismadb.customer.findUnique({
       where: { customerId: businessName },
     });
-    console.log("Customer Data:", customerData); // Debugging log
 
     // Create the tag with either a new customer or connect to an existing one
     const tag = await prismadb.tag.create({

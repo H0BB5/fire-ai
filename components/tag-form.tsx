@@ -31,6 +31,8 @@ import { Wand2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { UploadThing } from "@/components/image-upload";
 
+import { useAIStore } from "@/app/store/fire-ai";
+
 const SEED_DETAILS =
   "These field is optional but can be helpful for future reference";
 const formSchema = z.object({
@@ -81,6 +83,7 @@ const equipmentTypes = [
 export const TagForm = ({ tags, initialData }: CompanionFormProps) => {
   const router = useRouter();
   const { toast } = useToast();
+  const extractedText = useAIStore((state) => state.extraction);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -130,6 +133,18 @@ export const TagForm = ({ tags, initialData }: CompanionFormProps) => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 pb-10"
         >
+          <FormField
+            name="src"
+            render={({ field }) => (
+              <FormItem className="flex flex-col items-center justify-center space-y-4 ">
+                {/* <FormLabel>Upload Photo of Tag</FormLabel> */}
+                <FormControl>
+                  <UploadThing />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <div className="space-y-2 w-full">
             <div>
               <h3 className="text-lg font-medium">Confirm Extraction</h3>
@@ -138,18 +153,8 @@ export const TagForm = ({ tags, initialData }: CompanionFormProps) => {
               </p>
             </div>
             <Separator className="bg-primary/10" />
+            {extractedText}
           </div>
-          <UploadThing />
-          <FormField
-            name="src"
-            render={({ field }) => (
-              <FormItem className="flex flex-col items-center justify-center space-y-4 ">
-                <FormControl></FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* COMPANY NAME  */}
             <FormField
