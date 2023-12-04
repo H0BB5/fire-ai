@@ -9,8 +9,8 @@ generator client {
 }
 
 model Technician {
-  id           String @id @default(uuid())
-  technicianId String @unique
+  id           String  @id @default(uuid())
+  technicianId String  @unique
   firstName    String? @db.Text
   email        String? @unique
 

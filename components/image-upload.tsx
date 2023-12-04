@@ -1,6 +1,6 @@
 "use client";
 
-import { UploadButton } from "@/utils/uploadthing";
+import { UploadButton } from "@/lib/uploadthing";
 import { Upload, Camera } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
