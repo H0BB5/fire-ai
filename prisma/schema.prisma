@@ -9,10 +9,10 @@ generator client {
 }
 
 model Technician {
-  id     String @id @default(uuid())
-  userId String @unique
-  name   String
-  email  String @unique
+  id           String @id @default(uuid())
+  technicianId String @unique
+  firstName    String? @db.Text
+  email        String? @unique
 
   tags      Tag[]
   customers Customer[]
@@ -23,23 +23,25 @@ model Technician {
 
 // When a Tag is created this is the customer that is created
 model Customer {
-  id           String     @id @default(uuid())
-  name         String
-  address      String
-  location     String
+  id              String     @id @default(uuid())
+  customerId      String     @unique
+  businessName    String     @db.Text
+  address         String
+  city            String?
   // Tags associated with this customer
-  tags         Tag[]
+  tags            Tag[]
   // Technician that created this customer
-  technicianId String
-  technician   Technician @relation(fields: [technicianId], references: [id])
+  technicianId    String
+  technician      Technician @relation(fields: [technicianId], references: [id])
   // Info (provided by Technician) - optional
-  contactName  String
-  contactPhone String
-  contactEmail String
+  contactName     String?
+  contactEmail    String?
+  contactPhone    String?
+  technicianNotes String?
   // timestamps
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  deletedAt    DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  deletedAt       DateTime?
 
   // indexes
   @@index([technicianId])
@@ -47,37 +49,32 @@ model Customer {
 
 // When a tag is created a customer is created 
 model Tag {
-  id             String         @id @default(uuid())
+  id             String      @id @default(uuid())
   // Technician who created this tag
-  technicianId   String
-  technician     Technician     @relation(fields: [technicianId], references: [id])
+  technicianId   String?
+  technician     Technician? @relation(fields: [technicianId], references: [id])
   // Customer this tag is associated with
-  customerId     String
-  customer       Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId     String?
+  customer       Customer?   @relation(fields: [customerId], references: [id], onDelete: Cascade)
   // These are the details found on a tag (provided by Technician)
   // Tag Info:
   name           String
   type           String
   location       String
-  expirationDate DateTime
-  serialNumber   String
+  expirationDate DateTime?
+  serial         String
   rating         String
+
   // photos:
-  photoFrontUrl  String
-  photoBackUrl   String
-  // Sales cycle:
-  status         String
-  // Customer Info:
-  customerContact String
-  customerEmail   String
-  customerPhone   String
-  technicianNotes String
+  photoFrontUrl String?
+  photoBackUrl  String?
+
   // Notification:
-  notification   Notification[]
+  notification Notification[]
   // timestamps:
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  deletedAt      DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  deletedAt    DateTime?
 
   @@index([technicianId])
   @@index([customerId])

@@ -9,8 +9,9 @@ async function main() {
     // Seed Technician data
     const technician = await db.technician.create({
       data: {
-        userId: uuidv4(),
-        name: "John Doe",
+        id: uuidv4(),
+        technicianId: "JohnDoe",
+        firstName: "John",
         email: "johndoe@example.com",
       },
     });
@@ -18,9 +19,11 @@ async function main() {
     // Seed Customer data
     const customer = await db.customer.create({
       data: {
-        name: "Fire Safety Inc.",
+        id: uuidv4(),
+        customerId: "C12345",
+        businessName: "Fire Safety Inc.",
         address: "123 Fire Lane, Safety Town, ST 12345",
-        location: "Main Office",
+        city: "Edmonton",
         contactName: "Jane Smith",
         contactPhone: "123-456-7890",
         contactEmail: "contact@firesafety.com",
@@ -31,18 +34,14 @@ async function main() {
     // Seed Tag data
     const tag = await db.tag.create({
       data: {
-        name: "Office Fire Extinguisher",
+        name: customer.businessName,
         type: "Fire Extinguisher",
         location: "Office",
         expirationDate: addDays(new Date(), 150), // 150 days from now
-        serialNumber: "SN123456",
+        serial: "SN123456",
         rating: "A",
-        extinguisher: true,
-        fireHose: false,
-        fireSystem: false,
         photoFrontUrl: "http://example.com/photo_front_1.jpg",
         photoBackUrl: "http://example.com/photo_back_1.jpg",
-        status: "Active",
         technicianId: technician.id,
         customerId: customer.id,
       },

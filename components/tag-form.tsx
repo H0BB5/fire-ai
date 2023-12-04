@@ -3,6 +3,7 @@
 import axios from "axios";
 import * as z from "zod";
 import { Customer, Tag } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
@@ -31,45 +32,68 @@ import { useToast } from "@/components/ui/use-toast";
 import { UploadThing } from "@/components/image-upload";
 
 const SEED_DETAILS =
-  "Place some additional information about the business here.";
+  "These field is optional but can be helpful for future reference";
 const formSchema = z.object({
-  name: z.string().min(1, {
-    message: "Company Name is required",
+  customer: z.string().min(1, {
+    message: "Customer Name is required",
   }),
-  description: z.string().min(1, {
+  address: z.string().min(1, {
     message: "Address is required",
   }),
-  instructions: z.string().min(200, {
-    message: "Instructions require at least 200 characters",
+  type: z.string().min(1, {
+    message: "Equipment Type is required",
   }),
-  seed: z.string().min(200, {
-    message: "Seed require at least 200 characters",
+  location: z.string().min(1, {
+    message: "Equipment Location is required",
   }),
-  src: z.string().min(1, {
-    message: "Image is required",
+  serial: z.string().min(1, {
+    message: "Serial Number is required",
   }),
-  categoryId: z.string().min(1, {
-    message: "Category is required",
+  rating: z.string().min(1, {
+    message: "Rating is required",
   }),
+  notes: z.string().optional(),
 });
 
 interface CompanionFormProps {
-  initialData: Customer | null;
+  initialData: Customer | Tag | null;
   tags: Tag[];
 }
 
+enum EQUIPMENT {
+  Extinguisher = "Fire Extinguisher",
+  Hose = "Fire Hose",
+  System = "Fire System",
+}
+
+const equipmentTypes = [
+  {
+    type: EQUIPMENT.Extinguisher,
+  },
+  {
+    type: EQUIPMENT.Hose,
+  },
+  {
+    type: EQUIPMENT.System,
+  },
+];
+
 export const TagForm = ({ tags, initialData }: CompanionFormProps) => {
+  const router = useRouter();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      name: "",
-      description: "",
-      instructions: "",
-      seed: "",
-      src: "",
-      categoryId: undefined,
+      // frontTagSrc: "",
+      // backTagSrc: "",
+      customer: "",
+      address: "",
+      type: "",
+      location: "",
+      serial: "",
+      rating: "",
+      // expiration: "",
     },
   });
 
@@ -79,10 +103,10 @@ export const TagForm = ({ tags, initialData }: CompanionFormProps) => {
     try {
       if (initialData) {
         // Update Ticket
-        await axios.patch(`/api/tag/${initialData.id}`, values);
+        await axios.patch(`/api/customer/${initialData.id}`, values);
       } else {
         // Create Schedule
-        await axios.post("/api/tag", values);
+        await axios.post("/api/customer", values);
       }
       toast({
         description: "Success.",
@@ -94,6 +118,9 @@ export const TagForm = ({ tags, initialData }: CompanionFormProps) => {
         description: "Something went wrong.",
       });
     }
+
+    router.refresh();
+    router.push("/");
   };
 
   return (
@@ -126,32 +153,49 @@ export const TagForm = ({ tags, initialData }: CompanionFormProps) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* COMPANY NAME  */}
             <FormField
-              name="name"
+              name="customer"
               control={form.control}
               render={({ field }) => (
                 <FormItem className="col-span-2 md:col-span-1">
-                  <FormLabel>Company Name</FormLabel>
+                  <FormLabel>Customer Name</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
-                      placeholder="Enter address here"
+                      placeholder="Enter name of company"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Short description for your AI Companion
-                  </FormDescription>
+                  <FormDescription></FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            {/* LOCATION  */}
+            {/* Business Address  */}
             <FormField
-              name="categoryId"
+              name="address"
               control={form.control}
               render={({ field }) => (
                 <FormItem className="col-span-2 md:col-span-1">
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel>Customer Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isLoading}
+                      placeholder="Enter address"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription></FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* TYPE  */}
+            <FormField
+              name="type"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="col-span-2 md:col-span-1">
+                  <FormLabel>Equipment Type</FormLabel>
                   <Select
                     disabled={isLoading}
                     onValueChange={field.onChange}
@@ -162,87 +206,115 @@ export const TagForm = ({ tags, initialData }: CompanionFormProps) => {
                       <SelectTrigger className="bg-background">
                         <SelectValue
                           defaultValue={field.value}
-                          placeholder="Select a category"
+                          placeholder="Select type"
                         />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {tags.map((tag) => (
+                      {equipmentTypes.map((equipment) => (
                         <SelectItem
-                          key={tag.id}
-                          value={tag.id}
+                          key={equipment.type}
+                          value={equipment.type}
                           className="hover:bg-primary/10"
                         >
-                          {tag.rating}
+                          {equipment.type}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    Select a category for your AI
-                  </FormDescription>
+                  {/* <FormDescription>
+                    Select the type of equipment the tag is for
+                  </FormDescription> */}
                 </FormItem>
               )}
             />
-            {/* TYPE  */}
+            {/* LOCATION  */}
             <FormField
-              name="description"
+              name="location"
               control={form.control}
               render={({ field }) => (
                 <FormItem className="col-span-2 md:col-span-1">
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Equipment Location</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
-                      placeholder="CEO & Founder of Tesla, SpaceX"
+                      placeholder="Location of tag"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Short description for your AI Companion
-                  </FormDescription>
+                  <FormDescription></FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
             {/* SERIAL NUMBER  */}
+            <FormField
+              name="serial"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="col-span-2 md:col-span-1">
+                  <FormLabel>Serial Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isLoading}
+                      placeholder="Enter Serial Number"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription></FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {/* RATING  */}
-            {/* EXTINGUISHER | FIRE HOSE | FIRE SYSTEM  */}
+            <FormField
+              name="rating"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="col-span-2 md:col-span-1">
+                  <FormLabel>Rating</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isLoading}
+                      placeholder="Enter Rating"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription></FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <div className="space-y-2 w-full">
-            <div>
-              <h3 className="font-medium">Additional Information</h3>
-              <p className="text-sm text-muted-foreground mt-2">
-                Provide any additional information that may be relevant when
-                contacting customer
-              </p>
-            </div>
-          </div>
-          <FormField
-            name="instructions"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem className="col-span-2 md:col-span-1">
-                <FormLabel>Instructions</FormLabel>
-                <FormControl>
-                  <Textarea
-                    className="bg-background"
-                    disabled={isLoading}
-                    rows={7}
-                    placeholder={SEED_DETAILS}
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Describe in detail your compan&apos;s backstory and relevant
-                  details.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              name="notes"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="col-span-2 md:col-span-1">
+                  <FormLabel>
+                    <h3 className="font-medium">Technician Notes</h3>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Contact information, customer preferences, job notes,
+                      etc.,
+                    </p>
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      className="bg-background"
+                      disabled={isLoading}
+                      rows={7}
+                      placeholder="Provide any additional information that may be relevant
+                      when contacting customer"
+                      {...field}
+                    />
+                  </FormControl>
 
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <div className="w-full flex justify-content">
             <Button size="lg" disabled={isLoading}>
               {initialData
