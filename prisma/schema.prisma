@@ -5,14 +5,15 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 model Technician {
   id           String  @id @default(uuid())
   technicianId String  @unique
   firstName    String? @db.Text
-  email        String? @unique
+  email        String  @unique
 
   tags      Tag[]
   customers Customer[]
@@ -49,16 +50,16 @@ model Customer {
 
 // When a tag is created a customer is created 
 model Tag {
-  id             String      @id @default(uuid())
+  id             String     @id @default(uuid())
   // Technician who created this tag
-  technicianId   String?
-  technician     Technician? @relation(fields: [technicianId], references: [id])
+  technicianId   String
+  technician     Technician @relation(fields: [technicianId], references: [id])
   // Customer this tag is associated with
   customerId     String?
-  customer       Customer?   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer       Customer?  @relation(fields: [customerId], references: [id], onDelete: Cascade)
   // These are the details found on a tag (provided by Technician)
   // Tag Info:
-  name           String
+  name           String     @db.Text
   type           String
   location       String
   expirationDate DateTime?

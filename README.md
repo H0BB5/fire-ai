@@ -36,3 +36,11 @@ This project is an AI driven sales tool for fire safety equipment. It is designe
   - [ ] OCR
 - [ ] Testing
 - [ ] Deployment
+
+### Notes
+
+- Move to drizzle ORM for database
+- Handle upload of images better
+- Add more tags for searching
+- Add more tags for filtering
+- Create data table
