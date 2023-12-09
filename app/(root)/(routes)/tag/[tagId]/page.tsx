@@ -1,5 +1,7 @@
 import { TagForm } from "@/components/tag-form";
 import prismadb from "@/lib/prismadb";
+import { DatePicker } from "../../components/sample-date-picker";
+import { DatePicker as DatePickerB } from "../../components/date-picker";
 
 interface TagIdProps {
   params: {
@@ -15,7 +17,16 @@ const TagIdPage = async ({ params }: TagIdProps) => {
   });
 
   const tags = await prismadb.tag.findMany();
-  return <TagForm initialData={customer} tags={tags} />;
+  const date = new Date();
+  return (
+    <>
+      <div className="flex justify-between my-32">
+        <DatePicker />
+        <DatePickerB />
+      </div>
+      <TagForm initialData={customer} tags={tags} />
+    </>
+  );
 };
 
 export default TagIdPage;

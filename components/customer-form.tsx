@@ -33,8 +33,6 @@ import { UploadThing } from "@/components/image-upload";
 
 import { useAIStore } from "@/app/store/fire-ai";
 
-const SEED_DETAILS =
-  "These field is optional but can be helpful for future reference";
 const formSchema = z.object({
   customer: z.string().min(1, {
     message: "Customer Name is required",

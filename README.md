@@ -44,3 +44,29 @@ This project is an AI driven sales tool for fire safety equipment. It is designe
 - Add more tags for searching
 - Add more tags for filtering
 - Create data table
+
+#### ToDo's
+
+- Handle upload of images better
+- Sort out customer vs tag submission/edits
+- Integrate auto email sending we can use services like mailgun, sendgrid, etc.
+
+##### User Routes
+
+Dash -> Customer (first tag) -> Creates Customer Record & also
+-> Creates Tag ->
+
+##### Done
+
+```
+For integration with Zod, we can do:
+const schema = z.object({
+  date: z.date()
+})
+
+// Parse date when validating
+const { data } = form.getValues();
+data.date = date;
+
+form.setValue('date', date);
+```
