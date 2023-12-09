@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Home, Tags, Settings } from "lucide-react";
+import { Home, Tags, Settings, Building2 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 export const Sidebar = () => {
@@ -15,6 +15,11 @@ export const Sidebar = () => {
     },
     {
       icon: Tags,
+      href: "/tag/new",
+      label: "Create",
+    },
+    {
+      icon: Building2,
       href: "/customer/new",
       label: "Create",
     },

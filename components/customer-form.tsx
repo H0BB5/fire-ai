@@ -33,6 +33,8 @@ import { UploadThing } from "@/components/image-upload";
 
 import { useAIStore } from "@/app/store/fire-ai";
 
+const SEED_DETAILS =
+  "These field is optional but can be helpful for future reference";
 const formSchema = z.object({
   customer: z.string().min(1, {
     message: "Customer Name is required",
@@ -55,7 +57,7 @@ const formSchema = z.object({
   notes: z.string().optional(),
 });
 
-interface CompanionFormProps {
+interface CustomerFormProps {
   initialData: Customer | Tag | null;
   tags: Tag[];
 }
@@ -78,7 +80,7 @@ const equipmentTypes = [
   },
 ];
 
-export const TagForm = ({ tags, initialData }: CompanionFormProps) => {
+export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
   const router = useRouter();
   const { toast } = useToast();
   const extractedText = useAIStore((state) => state.extraction);
@@ -321,7 +323,7 @@ export const TagForm = ({ tags, initialData }: CompanionFormProps) => {
           <div className="w-full flex justify-content">
             <Button size="lg" disabled={isLoading}>
               {initialData
-                ? "Update tag submission"
+                ? "Edit your companion"
                 : "Schedule service reminder"}
               <Wand2 className="w-4 h-4 ml-2" />
             </Button>
