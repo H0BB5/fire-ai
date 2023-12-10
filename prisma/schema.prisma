@@ -51,6 +51,7 @@ model Customer {
 // When a tag is created a customer is created 
 model Tag {
   id             String     @id @default(uuid())
+  tagId          String     @unique
   // Technician who created this tag
   technicianId   String
   technician     Technician @relation(fields: [technicianId], references: [id])
@@ -67,8 +68,8 @@ model Tag {
   rating         String
 
   // photos:
-  photoFrontUrl String?
-  photoBackUrl  String?
+  frontTagSrc String
+  backTagSrc  String?
 
   // Notification:
   notification Notification[]

@@ -15,7 +15,7 @@ export async function imageOCR(image: string) {
         content: [
           {
             type: "text",
-            text: "This is an image of a Fire Tag, please extract the following information from the image: Name, Address, Type, Serial, Location, Rating, and Size.",
+            text: "This is an image of a Fire Tag, please extract the following information from the image: Name, Address, Type, Serial, Location, Rating, and Size. If the photo does not have a fire tag in it, then say `No fire tag detected, please upload a new photo.`",
           },
           {
             type: "image_url",

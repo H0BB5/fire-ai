@@ -1,8 +1,9 @@
 import { TagForm } from "@/components/tag-form";
 import prismadb from "@/lib/prismadb";
-import { DatePicker } from "../../components/sample-date-picker";
-import { DatePicker as DatePickerB } from "../../components/date-picker";
 
+/**
+ * This page is used to render the TagForm component.
+ */
 interface TagIdProps {
   params: {
     tagId: string;
@@ -20,10 +21,6 @@ const TagIdPage = async ({ params }: TagIdProps) => {
   const date = new Date();
   return (
     <>
-      <div className="flex justify-between my-32">
-        <DatePicker />
-        <DatePickerB />
-      </div>
       <TagForm initialData={customer} tags={tags} />
     </>
   );

@@ -17,7 +17,7 @@ const font = Poppins({
 
 export const Navbar = () => {
   return (
-    <div className="fixed w-full z-50 flex justify-between py-2 px-4 border-b border-primary/10 bg-secondary h-16">
+    <div className="fixed w-full z-50 flex justify-between py-2 px-4 border-b border-primary/10 bg-background h-16">
       <MobileSidebar />
 
       <div className="flex items-center">

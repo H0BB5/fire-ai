@@ -6,9 +6,14 @@ import { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { setExtraction } from "@/app/store/fire-ai";
+import { useFormContext } from "react-hook-form";
+interface UploadThingProps extends React.HTMLAttributes<HTMLDivElement> {
+  onUpload: (url: string) => void;
+}
 
-export const UploadThing = () => {
+export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
   const [photo, setPhoto] = useState("");
+  const form = useFormContext();
 
   const extractText = async (imageUrl: string) => {
     const ocrResponse = await fetch("/api/ai", {
@@ -62,6 +67,7 @@ export const UploadThing = () => {
                 console.log("Files: ", res);
                 setPhoto(res[0].url);
                 extractText(res[0].url);
+                form.setValue("frontTagSrc", res[0].url);
               }}
               onUploadError={(error: Error) => {
                 // Do something with the error.

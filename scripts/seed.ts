@@ -6,11 +6,15 @@ const db = new PrismaClient();
 
 async function main() {
   try {
-    // Seed Technician data
+    const id = uuidv4();
+    const technicianId = uuidv4();
+    const tagId = uuidv4();
+    const customerId = uuidv4();
+
     const technician = await db.technician.create({
       data: {
-        id: uuidv4(),
-        technicianId: "JohnDoe",
+        id,
+        technicianId,
         firstName: "John",
         email: "johndoe@example.com",
       },
@@ -20,30 +24,44 @@ async function main() {
     const customer = await db.customer.create({
       data: {
         id: uuidv4(),
-        customerId: "C12345",
+        customerId,
         businessName: "Fire Safety Inc.",
         address: "123 Fire Lane, Safety Town, ST 12345",
         city: "Edmonton",
         contactName: "Jane Smith",
         contactPhone: "123-456-7890",
         contactEmail: "contact@firesafety.com",
-        technicianId: technician.id,
+        technician: {
+          connect: {
+            technicianId: technicianId,
+          },
+        },
       },
     });
 
     // Seed Tag data
     const tag = await db.tag.create({
       data: {
+        id: uuidv4(),
+        tagId,
         name: customer.businessName,
         type: "Fire Extinguisher",
         location: "Office",
         expirationDate: addDays(new Date(), 150), // 150 days from now
         serial: "SN123456",
         rating: "A",
-        photoFrontUrl: "http://example.com/photo_front_1.jpg",
-        photoBackUrl: "http://example.com/photo_back_1.jpg",
-        technicianId: technician.id,
-        customerId: customer.id,
+        frontTagSrc: "http://example.com/photo_front_1.jpg",
+        backTagSrc: "http://example.com/photo_back_1.jpg",
+        technician: {
+          connect: {
+            technicianId: technicianId,
+          },
+        },
+        customer: {
+          connect: {
+            customerId: customerId,
+          },
+        },
       },
     });
 

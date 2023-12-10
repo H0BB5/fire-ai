@@ -3,6 +3,9 @@ import { SearchInput } from "@/components/search-input";
 import prismadb from "@/lib/prismadb";
 import Customers from "@/components/customers";
 
+/**
+ * This is the dashboard page.
+ */
 interface RootPageProps {
   searchParams: {
     customerId: string;

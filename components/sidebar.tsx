@@ -21,7 +21,7 @@ export const Sidebar = () => {
     {
       icon: Building2,
       href: "/customer/new",
-      label: "Create",
+      label: "Customers",
     },
     {
       icon: Settings,
@@ -34,7 +34,7 @@ export const Sidebar = () => {
     return router.push(url);
   };
   return (
-    <div className="space-y-4 flex flex-col h-full text-primary bg-secondary">
+    <div className="space-y-4 flex flex-col h-full text-primary bg-background">
       <div className="p-3 flex flex-1 justify-center">
         <div className="space-y-2">
           {routes.map((route) => (
@@ -42,7 +42,7 @@ export const Sidebar = () => {
               onClick={() => onNavigate(route.href)}
               key={route.href}
               className={cn(
-                "select-none text-muted-foreground text-xs group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-primary hover:bg-primary/10 rounded-lg transition",
+                "select-none text-muted-foreground text-xs group flex p-2 w-full justify-start font-medium cursor-pointer hover:text-primary hover:bg-primary/10 rounded-lg transition",
                 pathname === route.href && "bg-primary/10 text-primary"
               )}
             >

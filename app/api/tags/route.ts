@@ -44,22 +44,20 @@ export async function POST(req: Request) {
       });
     }
 
-    // TODO: Check if customer already exists
-    // Check if customer already exists
-    let customerData = await prismadb.customer.findUnique({
-      where: { customerId: businessName },
+    // Check if tag already exists
+    let tagData = await prismadb.tag.findUnique({
+      where: { tagId: businessName },
     });
 
     // Create the tag with either a new customer or connect to an existing one
     const tag = await prismadb.tag.create({
       data: {
+        tagId: businessName,
         technician: {
-          connect: {
-            id: technicianRecord.id,
-          },
+          connect: { id: technicianRecord.id },
         },
-        customer: customerData
-          ? { connect: { id: customerData.id } }
+        customer: tagData
+          ? { connect: { id: tagData.id } }
           : {
               create: {
                 customerId: businessName,
@@ -75,14 +73,13 @@ export async function POST(req: Request) {
         location,
         serial,
         rating,
-        tagId: businessName,
         frontTagSrc,
       },
     });
 
     return NextResponse.json(tag);
   } catch (error) {
-    console.log("[CUSTOMER_POST]", error);
+    console.log("[TAG_POST]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
