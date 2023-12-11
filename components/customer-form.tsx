@@ -64,7 +64,6 @@ const equipmentTypes = [
 export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
   const router = useRouter();
   const { toast } = useToast();
-  const extractedText = useAIStore((state) => state.extraction);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
