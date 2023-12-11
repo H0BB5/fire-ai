@@ -11,6 +11,19 @@ interface UploadThingProps extends React.HTMLAttributes<HTMLDivElement> {
   onUpload: (url: string) => void;
 }
 
+const transformResponse = (response: any) => {
+  return {
+    nameOfTagIssuer: response.nameOfTagIssuer,
+    businessName: response.customerName,
+    address: response.address,
+    type: response.type,
+    location: response.location,
+    serial: response.serial,
+    rating: response.rating,
+    lastTestDate: response.lastTestDate, // handle date conversion
+  };
+};
+
 export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
   const { setValue, getValues } = useFormContext();
   const initialImage = getValues("frontTagSrc");
@@ -25,8 +38,20 @@ export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
       body: JSON.stringify({ imageUrl: imageUrl }),
     });
     const { response } = await ocrResponse.json();
+    const cleaned = response.replace(/`/g, "");
+    const jsonString = cleaned.replace("json", "");
+    const aiExtract = JSON.parse(jsonString);
     console.log("OCR Response Body:", response); // Log the raw response body
-    setExtraction(response.message.content);
+    setExtraction({
+      nameOfTagIssuer: aiExtract.nameOfTagIssuer,
+      businessName: aiExtract.customerName,
+      address: aiExtract.address,
+      type: aiExtract.type,
+      location: aiExtract.location,
+      serial: aiExtract.serial,
+      rating: aiExtract.rating,
+      lastTestDate: aiExtract.lastTestDate,
+    });
   };
 
   return (

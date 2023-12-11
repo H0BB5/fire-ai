@@ -32,6 +32,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { UploadThing } from "@/components/image-upload";
 import { DatePicker } from "@/components/date-picker";
 import { useAIStore } from "@/app/store/fire-ai";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   frontTagSrc: z.string().min(1, {
@@ -69,8 +70,8 @@ interface CompanionFormProps {
 }
 
 enum EQUIPMENT {
-  Extinguisher = "Extinguisher",
-  Hose = "Hose",
+  Extinguisher = "Fire Extinguisher",
+  Hose = "Fire Hose",
   System = "System",
 }
 
@@ -89,7 +90,8 @@ const equipmentTypes = [
 export const TagForm = ({ initialData }: CompanionFormProps) => {
   const router = useRouter();
   const { toast } = useToast();
-  const extractedText = useAIStore((state) => state.extraction);
+  const aiTagData = useAIStore((state) => state.aiTagData);
+
   console.log(initialData);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -107,6 +109,19 @@ export const TagForm = ({ initialData }: CompanionFormProps) => {
   });
 
   const isLoading = form.formState.isSubmitting;
+
+  useEffect(() => {
+    if (aiTagData) {
+      console.log("AI RETREIVED TAG DATA", aiTagData);
+      form.setValue("businessName", aiTagData.businessName);
+      form.setValue("customer.address", aiTagData.address);
+      form.setValue("type", aiTagData.type);
+      form.setValue("location", aiTagData.location);
+      form.setValue("serial", aiTagData.serial);
+      form.setValue("rating", aiTagData.rating);
+      //form.setValue('lastTestDate', aiTagData.lastTestDate);
+    }
+  }, [form, aiTagData]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
@@ -152,191 +167,194 @@ export const TagForm = ({ initialData }: CompanionFormProps) => {
                 </FormItem>
               )}
             />
-            <div className="space-y-2 w-full">
-              <div>
-                <h3 className="text-lg font-medium">Confirm Extraction</h3>
-                <p className="text-sm text-muted-foreground">
-                  Confirm the below details of the Tag
-                </p>
-              </div>
-              <Separator className="bg-primary/10" />
-              {extractedText}
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* COMPANY NAME  */}
-              <FormField
-                name="businessName"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="col-span-2 md:col-span-1">
-                    <FormLabel>Customer Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isLoading}
-                        placeholder="Enter name of company"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription></FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* Business Address  */}
-              <FormField
-                name="customer.address"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="col-span-2 md:col-span-1">
-                    <FormLabel>Customer Address</FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isLoading}
-                        placeholder="Enter address"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription></FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* TYPE  */}
-              <FormField
-                name="type"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="col-span-2 md:col-span-1">
-                    <FormLabel>Equipment Type</FormLabel>
-                    <Select
-                      disabled={isLoading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="bg-background">
-                          <SelectValue
-                            defaultValue={field.value}
-                            placeholder="Select type"
+            {aiTagData && (
+              <>
+                <div className="space-y-2 w-full">
+                  <div>
+                    <h3 className="text-lg font-medium">Confirm Extraction</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Confirm the below details of the Tag
+                    </p>
+                  </div>
+                  <Separator className="bg-primary/10" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* COMPANY NAME  */}
+                  <FormField
+                    name="businessName"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="col-span-2 md:col-span-1">
+                        <FormLabel>Customer Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={isLoading}
+                            placeholder="Enter name of company"
+                            {...field}
                           />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {equipmentTypes.map((equipment) => (
-                          <SelectItem
-                            key={equipment.type}
-                            value={equipment.type}
-                            className="hover:bg-primary/10"
-                          >
-                            {equipment.type}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {/* <FormDescription>
+                        </FormControl>
+                        <FormDescription></FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {/* Business Address  */}
+                  <FormField
+                    name="customer.address"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="col-span-2 md:col-span-1">
+                        <FormLabel>Customer Address</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={isLoading}
+                            placeholder="Enter address"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription></FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {/* TYPE  */}
+                  <FormField
+                    name="type"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="col-span-2 md:col-span-1">
+                        <FormLabel>Equipment Type</FormLabel>
+                        <Select
+                          disabled={isLoading}
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="bg-background">
+                              <SelectValue
+                                defaultValue={field.value}
+                                placeholder="Select type"
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {equipmentTypes.map((equipment) => (
+                              <SelectItem
+                                key={equipment.type}
+                                value={equipment.type}
+                                className="hover:bg-primary/10"
+                              >
+                                {equipment.type}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {/* <FormDescription>
                     Select the type of equipment the tag is for
                   </FormDescription> */}
-                  </FormItem>
-                )}
-              />
-              {/* LOCATION  */}
-              <FormField
-                name="location"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="col-span-2 md:col-span-1">
-                    <FormLabel>Equipment Location</FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isLoading}
-                        placeholder="Location of tag"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription></FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* SERIAL NUMBER  */}
-              <FormField
-                name="serial"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="col-span-2 md:col-span-1">
-                    <FormLabel>Serial Number</FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isLoading}
-                        placeholder="Enter Serial Number"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription></FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* RATING  */}
-              <FormField
-                name="rating"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="col-span-2 md:col-span-1">
-                    <FormLabel>Rating</FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isLoading}
-                        placeholder="Enter Rating"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription></FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <DatePicker />
-            </div>
-            {/* TECHNICIAN NOTES */}
-            <div className="space-y-2 w-full">
-              <FormField
-                name="notes"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="col-span-2 md:col-span-1">
-                    <FormLabel>
-                      <h3 className="font-medium">Technician Notes</h3>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        Contact information, customer preferences, job notes,
-                        etc.,
-                      </p>
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        className="bg-background"
-                        disabled={isLoading}
-                        rows={7}
-                        placeholder="Provide any additional information that may be relevant
+                      </FormItem>
+                    )}
+                  />
+                  {/* LOCATION  */}
+                  <FormField
+                    name="location"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="col-span-2 md:col-span-1">
+                        <FormLabel>Equipment Location</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={isLoading}
+                            placeholder="Location of tag"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription></FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {/* SERIAL NUMBER  */}
+                  <FormField
+                    name="serial"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="col-span-2 md:col-span-1">
+                        <FormLabel>Serial Number</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={isLoading}
+                            placeholder="Enter Serial Number"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription></FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {/* RATING  */}
+                  <FormField
+                    name="rating"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="col-span-2 md:col-span-1">
+                        <FormLabel>Rating</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={isLoading}
+                            placeholder="Enter Rating"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription></FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <DatePicker />
+                </div>
+                {/* TECHNICIAN NOTES */}
+                <div className="space-y-2 w-full">
+                  <FormField
+                    name="notes"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="col-span-2 md:col-span-1">
+                        <FormLabel>
+                          <h3 className="font-medium">Technician Notes</h3>
+                          <p className="text-sm text-muted-foreground mt-2">
+                            Contact information, customer preferences, job
+                            notes, etc.,
+                          </p>
+                        </FormLabel>
+                        <FormControl>
+                          <Textarea
+                            className="bg-background"
+                            disabled={isLoading}
+                            rows={7}
+                            placeholder="Provide any additional information that may be relevant
                       when contacting customer"
-                        {...field}
-                      />
-                    </FormControl>
+                            {...field}
+                          />
+                        </FormControl>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="w-full flex justify-content">
-              <Button size="lg" disabled={isLoading}>
-                {initialData
-                  ? "Update tag submission"
-                  : "Schedule service reminder"}
-                <Wand2 className="w-4 h-4 ml-2" />
-              </Button>
-            </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="w-full flex justify-content">
+                  <Button size="lg" disabled={isLoading}>
+                    {initialData
+                      ? "Update tag submission"
+                      : "Schedule service reminder"}
+                    <Wand2 className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </>
+            )}
           </form>
         </Form>
       </FormProvider>
