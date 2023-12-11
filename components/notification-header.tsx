@@ -60,10 +60,10 @@ export const NotificationHeader = ({ tag }: NotificationHeaderProps) => {
         <Button onClick={() => router.back()} size="icon" variant="ghost">
           <ChevronLeft className="h-8 w-8" />
         </Button>
-        <MessAvatar src={tag.photoFrontUrl || "empty.svg"} />
+        <MessAvatar src={tag.frontTagSrc || "empty.svg"} />
         <div className="flex flex-col gap-y-1">
           <div className="flex items-center gap-x-2">
-            <p className="font-bold">{tag.name}</p>
+            <p className="font-bold">{tag.businessName}</p>
             <div className="flex items-center text-sd text-muted-foreground">
               <MessagesSquare className="h-3 w-3 mr-1" />
               {tag._count.notification} {/* maybe show # of notifications */}
