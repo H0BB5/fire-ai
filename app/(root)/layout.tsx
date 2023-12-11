@@ -14,3 +14,4 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default RootLayout;
+RootLayout.displayName = "Dashboard Layout";

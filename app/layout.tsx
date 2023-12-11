@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], preload: true });
 
 export const metadata: Metadata = {
   title: "Fire Tag AI",

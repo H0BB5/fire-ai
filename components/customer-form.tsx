@@ -16,47 +16,30 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Wand2 } from "lucide-react";
+import { Building2, Wand2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { UploadThing } from "@/components/image-upload";
 
 import { useAIStore } from "@/app/store/fire-ai";
 
 const formSchema = z.object({
-  customer: z.string().min(1, {
+  businessName: z.string().min(1, {
     message: "Customer Name is required",
   }),
   address: z.string().min(1, {
     message: "Address is required",
   }),
-  type: z.string().min(1, {
-    message: "Equipment Type is required",
-  }),
-  location: z.string().min(1, {
-    message: "Equipment Location is required",
-  }),
-  serial: z.string().min(1, {
-    message: "Serial Number is required",
-  }),
-  rating: z.string().min(1, {
-    message: "Rating is required",
-  }),
+  contactName: z.string().optional(),
+  contactEmail: z.string().optional(),
   notes: z.string().optional(),
 });
 
 interface CustomerFormProps {
-  initialData: Customer | Tag | null;
+  initialData: Partial<Customer> | null;
   tags: Tag[];
 }
 
@@ -85,16 +68,12 @@ export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      // frontTagSrc: "",
-      // backTagSrc: "",
-      customer: "",
-      address: "",
-      type: "",
-      location: "",
-      serial: "",
-      rating: "",
-      // expiration: "",
+    defaultValues: {
+      businessName: initialData?.businessName || "",
+      address: initialData?.address || "",
+      contactName: initialData?.contactName || "",
+      contactEmail: initialData?.contactEmail || "",
+      notes: initialData?.technicianNotes || "",
     },
   });
 
@@ -102,16 +81,19 @@ export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      let response;
       if (initialData) {
         // Update Ticket
-        await axios.patch(`/api/customer/${initialData.id}`, values);
+        response = await axios.patch(`/api/customer/${initialData.id}`, values);
       } else {
         // Create Schedule
-        await axios.post("/api/customer", values);
+        response = await axios.post("/api/customer", values);
       }
       toast({
         description: "Success.",
       });
+      router.refresh();
+      router.push(`/customer/${response.data.id}`);
     } catch (err) {
       console.error(err, "Something went wrong");
       toast({
@@ -119,9 +101,6 @@ export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
         description: "Something went wrong.",
       });
     }
-
-    router.refresh();
-    router.push("/");
   };
 
   return (
@@ -131,32 +110,10 @@ export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 pb-10"
         >
-          <FormField
-            name="src"
-            render={({ field }) => (
-              <FormItem className="flex flex-col items-center justify-center space-y-4 ">
-                {/* <FormLabel>Upload Photo of Tag</FormLabel> */}
-                <FormControl>
-                  <UploadThing />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="space-y-2 w-full">
-            <div>
-              <h3 className="text-lg font-medium">Confirm Extraction</h3>
-              <p className="text-sm text-muted-foreground">
-                Confirm the below details of the Tag
-              </p>
-            </div>
-            <Separator className="bg-primary/10" />
-            {extractedText}
-          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* COMPANY NAME  */}
             <FormField
-              name="customer"
+              name="businessName"
               control={form.control}
               render={({ field }) => (
                 <FormItem className="col-span-2 md:col-span-1">
@@ -173,13 +130,32 @@ export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
                 </FormItem>
               )}
             />
+            {/* Contact Name  */}
+            <FormField
+              name="contactName"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="col-span-2 md:col-span-1">
+                  <FormLabel>Customer Contact</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isLoading}
+                      placeholder="Name of contact person"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription></FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {/* Business Address  */}
             <FormField
               name="address"
               control={form.control}
               render={({ field }) => (
                 <FormItem className="col-span-2 md:col-span-1">
-                  <FormLabel>Customer Address</FormLabel>
+                  <FormLabel>Address</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
@@ -192,94 +168,17 @@ export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
                 </FormItem>
               )}
             />
-            {/* TYPE  */}
+            {/* Contact Email  */}
             <FormField
-              name="type"
+              name="contactEmail"
               control={form.control}
               render={({ field }) => (
                 <FormItem className="col-span-2 md:col-span-1">
-                  <FormLabel>Equipment Type</FormLabel>
-                  <Select
-                    disabled={isLoading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="bg-background">
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select type"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {equipmentTypes.map((equipment) => (
-                        <SelectItem
-                          key={equipment.type}
-                          value={equipment.type}
-                          className="hover:bg-primary/10"
-                        >
-                          {equipment.type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {/* <FormDescription>
-                    Select the type of equipment the tag is for
-                  </FormDescription> */}
-                </FormItem>
-              )}
-            />
-            {/* LOCATION  */}
-            <FormField
-              name="location"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem className="col-span-2 md:col-span-1">
-                  <FormLabel>Equipment Location</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
-                      placeholder="Location of tag"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription></FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* SERIAL NUMBER  */}
-            <FormField
-              name="serial"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem className="col-span-2 md:col-span-1">
-                  <FormLabel>Serial Number</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isLoading}
-                      placeholder="Enter Serial Number"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription></FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* RATING  */}
-            <FormField
-              name="rating"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem className="col-span-2 md:col-span-1">
-                  <FormLabel>Rating</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isLoading}
-                      placeholder="Enter Rating"
+                      placeholder="Enter contact email"
                       {...field}
                     />
                   </FormControl>
@@ -298,8 +197,7 @@ export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
                   <FormLabel>
                     <h3 className="font-medium">Technician Notes</h3>
                     <p className="text-sm text-muted-foreground mt-2">
-                      Contact information, customer preferences, job notes,
-                      etc.,
+                      Business information, point of contact, job notes, etc.,
                     </p>
                   </FormLabel>
                   <FormControl>
@@ -308,7 +206,7 @@ export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
                       disabled={isLoading}
                       rows={7}
                       placeholder="Provide any additional information that may be relevant
-                      when contacting customer"
+                      for this customer account."
                       {...field}
                     />
                   </FormControl>
@@ -320,10 +218,8 @@ export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
           </div>
           <div className="w-full flex justify-content">
             <Button size="lg" disabled={isLoading}>
-              {initialData
-                ? "Edit your companion"
-                : "Schedule service reminder"}
-              <Wand2 className="w-4 h-4 ml-2" />
+              <Building2 className="w-4 h-4 mr-2" />
+              {initialData ? "Update customer info" : "Create customer record"}
             </Button>
           </div>
         </form>

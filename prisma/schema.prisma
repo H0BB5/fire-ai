@@ -56,11 +56,11 @@ model Tag {
   technicianId   String
   technician     Technician @relation(fields: [technicianId], references: [id])
   // Customer this tag is associated with
-  customerId     String?
-  customer       Customer?  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId     String
+  customer       Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
   // These are the details found on a tag (provided by Technician)
   // Tag Info:
-  name           String     @db.Text
+  businessName   String     @db.Text
   type           String
   location       String
   expirationDate DateTime?

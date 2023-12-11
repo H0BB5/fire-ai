@@ -75,7 +75,7 @@ form.setValue('date', date);
 
 - Just finished updating the fire tag to the database
 
-- Get initial data to show up on the form when a tag exists
+- Get initial data to show up on the form when a tag exists // Done
 - Get OPEN AI to fill form with data that it can retrieve
 - maybe hide form until the text extraction is first attempted
 - loading animation for the open ai / text extraction

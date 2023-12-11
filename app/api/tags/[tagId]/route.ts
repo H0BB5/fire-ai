@@ -5,16 +5,16 @@ import prismadb from "@/lib/prismadb";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { customerId: string } }
+  { params }: { params: { tagId: string } }
 ) {
   try {
     const body = await req.json();
     const technician = await currentUser();
     const {
-      // frontTagSrc,
+      frontTagSrc,
       // backTagSrc,
-      customer: businessName,
-      address,
+      businessName,
+      customer,
       type,
       location,
       serial,
@@ -23,12 +23,13 @@ export async function PATCH(
       // expiration
     } = body;
 
+    const { address } = customer;
     // check if technician is logged in
     if (!technician || !technician.id) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!businessName || !address || !type || !location || !serial || !rating) {
+    if (!businessName || !type || !location || !serial || !rating) {
       return new NextResponse("Bad Request", { status: 400 });
     }
 
@@ -47,16 +48,10 @@ export async function PATCH(
       });
     }
 
-    // TODO: Check if customer already exists
-    // Check if customer already exists
-    let customerData = await prismadb.customer.findUnique({
-      where: { customerId: businessName },
-    });
-
     // Create the tag with either a new customer or connect to an existing one
     const tag = await prismadb.tag.update({
       where: {
-        id: params.customerId,
+        id: params.tagId,
       },
       data: {
         technician: {
@@ -64,36 +59,41 @@ export async function PATCH(
             id: technicianRecord.id,
           },
         },
-        customer: customerData
-          ? { connect: { id: customerData.id } }
-          : {
-              create: {
-                customerId: businessName,
-                businessName: businessName,
-                address,
-                technician: {
-                  connect: { id: technicianRecord.id },
-                },
+        customer: {
+          upsert: {
+            create: {
+              customerId: businessName,
+              businessName: businessName,
+              address,
+              technician: {
+                connect: { id: technicianRecord.id },
               },
             },
-        name: businessName,
+            update: {
+              businessName,
+              address,
+            },
+          },
+        },
+        businessName,
         type,
         location,
         serial,
         rating,
+        frontTagSrc,
       },
     });
 
     return NextResponse.json(tag);
   } catch (error) {
-    console.log("[CUSTOMER_PATCH]", error);
+    console.log("[TAG_PATCH]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { customerId: string } }
+  { params }: { params: { tagId: string } }
 ) {
   try {
     const technician = await auth();
@@ -106,7 +106,7 @@ export async function DELETE(
     // Check if tag exists
     const tag = await prismadb.tag.findUnique({
       where: {
-        id: params.customerId,
+        id: params.tagId,
       },
     });
 
@@ -117,13 +117,13 @@ export async function DELETE(
     // Delete the tag
     await prismadb.tag.delete({
       where: {
-        id: params.customerId,
+        id: params.tagId,
       },
     });
 
     return NextResponse.json(tag);
   } catch (error) {
-    console.log("[CUSTOMER_DELETE]", error);
+    console.log("[TAG_DELETE]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

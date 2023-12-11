@@ -50,3 +50,4 @@ const RootPage = async ({ searchParams }: RootPageProps) => {
 };
 
 export default RootPage;
+RootPage.displayName = "Dashboard Page";

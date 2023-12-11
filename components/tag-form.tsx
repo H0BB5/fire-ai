@@ -37,11 +37,13 @@ const formSchema = z.object({
   frontTagSrc: z.string().min(1, {
     message: "Front Image of Tag is required",
   }),
-  customer: z.string().min(1, {
+  businessName: z.string().min(1, {
     message: "Customer Name is required",
   }),
-  address: z.string().min(1, {
-    message: "Address is required",
+  customer: z.object({
+    address: z.string().min(1, {
+      message: "Address is required",
+    }),
   }),
   type: z.string().min(1, {
     message: "Equipment Type is required",
@@ -59,8 +61,11 @@ const formSchema = z.object({
 });
 
 interface CompanionFormProps {
-  initialData: Customer | Tag | null;
-  tags: Tag[];
+  initialData:
+    | (Tag & {
+        customer?: Partial<Customer>;
+      })
+    | null;
 }
 
 enum EQUIPMENT {
@@ -81,18 +86,18 @@ const equipmentTypes = [
   },
 ];
 
-export const TagForm = ({ tags, initialData }: CompanionFormProps) => {
+export const TagForm = ({ initialData }: CompanionFormProps) => {
   const router = useRouter();
   const { toast } = useToast();
   const extractedText = useAIStore((state) => state.extraction);
-
+  console.log(initialData);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       frontTagSrc: "",
       // backTagSrc: "",
-      customer: "",
-      address: "",
+      businessName: "",
+      customer: { address: "" },
       type: "",
       location: "",
       serial: "",
@@ -160,7 +165,7 @@ export const TagForm = ({ tags, initialData }: CompanionFormProps) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* COMPANY NAME  */}
               <FormField
-                name="customer"
+                name="businessName"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="col-span-2 md:col-span-1">
@@ -179,7 +184,7 @@ export const TagForm = ({ tags, initialData }: CompanionFormProps) => {
               />
               {/* Business Address  */}
               <FormField
-                name="address"
+                name="customer.address"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="col-span-2 md:col-span-1">

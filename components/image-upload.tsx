@@ -12,8 +12,9 @@ interface UploadThingProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
-  const [photo, setPhoto] = useState("");
-  const form = useFormContext();
+  const { setValue, getValues } = useFormContext();
+  const initialImage = getValues("frontTagSrc");
+  const [photo, setPhoto] = useState(initialImage);
 
   const extractText = async (imageUrl: string) => {
     const ocrResponse = await fetch("/api/ai", {
@@ -38,6 +39,7 @@ export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
         border-primary/10
         rounded-lg
         hover:opacity-75
+        hover:cursor-pointer
         transition
         flex
         flex-col
@@ -46,41 +48,45 @@ export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
         justify-center"
       >
         <div className="relative h-40 w-40 flex flex-col items-center justify-center">
-          <div className={cn(photo ? `hidden` : `flex flex-col items-center`)}>
-            <div className="flex w-1/2 justify-around mb-2">
-              <Camera className="h-5 w-5" />
-              /
-              <Upload className="h-5 w-5" />
-            </div>
-            <UploadButton
-              // content={{
-              //   // button({ ready, isUploading }) {
-              //   //   if (ready) return "Front Tag";
-              //   //   if (isUploading) return "Scanning...";
-              //   //   return "Loading...";
-              //   // },
-              // }}
-              // change text
-              endpoint="imageUploader"
-              onClientUploadComplete={(res) => {
-                // Do something with the response
-                console.log("Files: ", res);
-                setPhoto(res[0].url);
-                extractText(res[0].url);
-                form.setValue("frontTagSrc", res[0].url);
-              }}
-              onUploadError={(error: Error) => {
-                // Do something with the error.
-                alert(`ERROR! ${error.message}`);
-              }}
-            />
-          </div>
           <Image
             fill
             alt="Upload"
-            src={photo ? photo : "/images/placeholder.png"}
-            className={cn(photo ? `rounded-lg object-cover` : `hidden`)}
+            sizes={"min-width: 100%"}
+            src={initialImage ? initialImage : "/empty.png"}
+            className={cn(initialImage ? `rounded-lg object-cover` : `hidden`)}
+            onClick={() => setValue("frontTagSrc", "")}
           />
+          {!initialImage && (
+            <div className={`flex flex-col items-center`}>
+              <div className="flex w-1/2 justify-around mb-2">
+                <Camera className="h-5 w-5" />
+                /
+                <Upload className="h-5 w-5" />
+              </div>
+              <UploadButton
+                // content={{
+                //   // button({ ready, isUploading }) {
+                //   //   if (ready) return "Front Tag";
+                //   //   if (isUploading) return "Scanning...";
+                //   //   return "Loading...";
+                //   // },
+                // }}
+                // change text
+                endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  // Do something with the response
+                  console.log("Files: ", res);
+                  setPhoto(res[0].url);
+                  extractText(res[0].url);
+                  setValue("frontTagSrc", res[0].url);
+                }}
+                onUploadError={(error: Error) => {
+                  // Do something with the error.
+                  alert(`ERROR! ${error.message}`);
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

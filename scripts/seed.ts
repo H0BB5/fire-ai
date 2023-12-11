@@ -44,7 +44,7 @@ async function main() {
       data: {
         id: uuidv4(),
         tagId,
-        name: customer.businessName,
+        businessName: customer.businessName,
         type: "Fire Extinguisher",
         location: "Office",
         expirationDate: addDays(new Date(), 150), // 150 days from now

@@ -27,6 +27,7 @@ export const Navbar = () => {
             alt="Alexander Safety Logo"
             width={80}
             height={55}
+            priority={true}
           />
         </Link>
       </div>

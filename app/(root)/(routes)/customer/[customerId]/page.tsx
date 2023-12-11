@@ -19,3 +19,4 @@ const CustomerIdPage = async ({ params }: CustomerIdPageProps) => {
 };
 
 export default CustomerIdPage;
+CustomerIdPage.displayName = "Customer ID Page";

@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     const {
       frontTagSrc,
       // backTagSrc,
-      customer: businessName,
+      businessName,
       address,
       type,
       location,
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
                 },
               },
             },
-        name: businessName,
+        businessName,
         type,
         location,
         serial,

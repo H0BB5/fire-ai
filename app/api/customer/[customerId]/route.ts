@@ -7,28 +7,19 @@ export async function PATCH(
   req: Request,
   { params }: { params: { customerId: string } }
 ) {
+  console.log("customer PATCH", params);
   try {
     const body = await req.json();
     const technician = await currentUser();
-    const {
-      // frontTagSrc,
-      // backTagSrc,
-      customer: businessName,
-      address,
-      type,
-      location,
-      serial,
-      rating,
-      notes,
-      // expiration
-    } = body;
+    console.log("customer PATCH", body);
+    const { businessName, address, contactName, contactEmail, notes } = body;
 
     // check if technician is logged in
     if (!technician || !technician.id) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!businessName || !address || !type || !location || !serial || !rating) {
+    if (!businessName || !address) {
       return new NextResponse("Bad Request", { status: 400 });
     }
 
@@ -47,14 +38,16 @@ export async function PATCH(
       });
     }
 
-    // TODO: Check if customer already exists
-    // Check if customer already exists
-    let customerData = await prismadb.customer.findUnique({
-      where: { customerId: businessName },
+    let customerTags = await prismadb.tag.findMany({
+      where: {
+        customerId: params.customerId,
+      },
     });
 
+    let tagIds = customerTags.map((tag) => ({ id: tag.id }));
+
     // Create the tag with either a new customer or connect to an existing one
-    const tag = await prismadb.tag.update({
+    const tag = await prismadb.customer.update({
       where: {
         id: params.customerId,
       },
@@ -64,23 +57,14 @@ export async function PATCH(
             id: technicianRecord.id,
           },
         },
-        customer: customerData
-          ? { connect: { id: customerData.id } }
-          : {
-              create: {
-                customerId: businessName,
-                businessName: businessName,
-                address,
-                technician: {
-                  connect: { id: technicianRecord.id },
-                },
-              },
-            },
-        name: businessName,
-        type,
-        location,
-        serial,
-        rating,
+        tags: {
+          connect: tagIds,
+        },
+        businessName,
+        contactName,
+        contactEmail,
+        technicianNotes: notes,
+        address,
       },
     });
 

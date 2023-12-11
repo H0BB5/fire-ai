@@ -11,19 +11,17 @@ interface TagIdProps {
 }
 
 const TagIdPage = async ({ params }: TagIdProps) => {
-  const customer = await prismadb.tag.findUnique({
+  const tag = await prismadb.tag.findUnique({
     where: {
       id: params.tagId,
     },
+    include: {
+      customer: true,
+    },
   });
 
-  const tags = await prismadb.tag.findMany();
-  const date = new Date();
-  return (
-    <>
-      <TagForm initialData={customer} tags={tags} />
-    </>
-  );
+  return <TagForm initialData={tag} />;
 };
 
 export default TagIdPage;
+TagIdPage.displayName = "Tag ID Page";
