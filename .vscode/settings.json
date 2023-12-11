@@ -1,3 +1,4 @@
 {
-  "cody.codebase": ""
+  "cody.codebase": "",
+  "editor.wordWrap": "bounded"
 }

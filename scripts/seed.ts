@@ -50,8 +50,8 @@ async function main() {
         expirationDate: addDays(new Date(), 150), // 150 days from now
         serial: "SN123456",
         rating: "A",
-        frontTagSrc: "http://example.com/photo_front_1.jpg",
-        backTagSrc: "http://example.com/photo_back_1.jpg",
+        frontTagSrc: "http://placehold.co/300x300/000000/fff.jpg",
+        backTagSrc: "http://placehold.co/300x300/444444/fff.jpg",
         technician: {
           connect: {
             technicianId: technicianId,

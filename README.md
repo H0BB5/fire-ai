@@ -73,11 +73,10 @@ form.setValue('date', date);
 
 ## TO-DO
 
-- Just finished updating the fire tag to the database
-
-- Get initial data to show up on the form when a tag exists // Done
+- Just finished updating the fire tag to the database // DONE
+- Get initial data to show up on the form when a tag exists // DONE
+- distinguish the customer search from the tag search // DONE
 - Get OPEN AI to fill form with data that it can retrieve
 - maybe hide form until the text extraction is first attempted
 - loading animation for the open ai / text extraction
-- distinguish the customer search from the tag search
 - create more generic dashboard (total tags, total submissions, top technician submissions, etc.)

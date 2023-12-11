@@ -20,7 +20,7 @@ export const Sidebar = () => {
     },
     {
       icon: Building2,
-      href: "/customer/new",
+      href: "/customer",
       label: "Customers",
     },
     {

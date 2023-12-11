@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       frontTagSrc,
       // backTagSrc,
       businessName,
-      address,
+      customer,
       type,
       location,
       serial,
@@ -19,7 +19,8 @@ export async function POST(req: Request) {
       notes,
       // expiration
     } = body;
-
+    const { address } = customer;
+    console.log("[TAG_POST]", body);
     // check if technician is logged in
     if (!technician || !technician.id) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -44,11 +45,6 @@ export async function POST(req: Request) {
       });
     }
 
-    // Check if tag already exists
-    let tagData = await prismadb.tag.findUnique({
-      where: { tagId: businessName },
-    });
-
     // Create the tag with either a new customer or connect to an existing one
     const tag = await prismadb.tag.create({
       data: {
@@ -56,18 +52,17 @@ export async function POST(req: Request) {
         technician: {
           connect: { id: technicianRecord.id },
         },
-        customer: tagData
-          ? { connect: { id: tagData.id } }
-          : {
-              create: {
-                customerId: businessName,
-                businessName: businessName,
-                address,
-                technician: {
-                  connect: { id: technicianRecord.id },
-                },
-              },
+        customer: {
+          create: {
+            customerId: businessName,
+            businessName: businessName,
+            address,
+            technicianNotes: notes,
+            technician: {
+              connect: { id: technicianRecord.id },
             },
+          },
+        },
         businessName,
         type,
         location,

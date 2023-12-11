@@ -65,6 +65,7 @@ export async function PATCH(
               customerId: businessName,
               businessName: businessName,
               address,
+              technicianNotes: notes,
               technician: {
                 connect: { id: technicianRecord.id },
               },

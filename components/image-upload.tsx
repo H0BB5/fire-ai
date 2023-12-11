@@ -53,7 +53,9 @@ export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
             alt="Upload"
             sizes={"min-width: 100%"}
             src={initialImage ? initialImage : "/empty.png"}
-            className={cn(initialImage ? `rounded-lg object-cover` : `hidden`)}
+            className={cn(
+              initialImage ? `rounded-lg object-contain` : `hidden`
+            )}
             onClick={() => setValue("frontTagSrc", "")}
           />
           {!initialImage && (

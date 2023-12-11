@@ -39,10 +39,14 @@ model Customer {
   contactEmail    String?
   contactPhone    String?
   technicianNotes String?
+
+  // Notifications
+  notification Notification[]
+
   // timestamps
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  deletedAt       DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   // indexes
   @@index([technicianId])
@@ -88,9 +92,12 @@ model Notification {
   tagId String
   tag   Tag    @relation(fields: [tagId], references: [id])
 
+  // Customer Info: 
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
   // Notification Info:
-  title String
-  body  String
+  title      String
+  body       String
 
   status   String
   sendDate DateTime
@@ -100,4 +107,5 @@ model Notification {
   deletedAt DateTime?
 
   @@index([tagId])
+  @@index([customerId])
 }

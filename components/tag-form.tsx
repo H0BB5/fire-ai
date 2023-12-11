@@ -69,9 +69,9 @@ interface CompanionFormProps {
 }
 
 enum EQUIPMENT {
-  Extinguisher = "Fire Extinguisher",
-  Hose = "Fire Hose",
-  System = "Fire System",
+  Extinguisher = "Extinguisher",
+  Hose = "Hose",
+  System = "System",
 }
 
 const equipmentTypes = [
