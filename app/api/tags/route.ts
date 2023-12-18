@@ -1,5 +1,6 @@
 import { currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 
 import prismadb from "@/lib/prismadb";
 
@@ -16,10 +17,9 @@ export async function POST(req: Request) {
       location,
       serial,
       rating,
-      notes,
       // expiration
     } = body;
-    const { address } = customer;
+    const { address, technicianNotes } = customer;
     console.log("[TAG_POST]", body);
     // check if technician is logged in
     if (!technician || !technician.id) {
@@ -45,10 +45,11 @@ export async function POST(req: Request) {
       });
     }
 
+    const tagId = uuidv4();
     // Create the tag with either a new customer or connect to an existing one
     const tag = await prismadb.tag.create({
       data: {
-        tagId: businessName,
+        tagId,
         technician: {
           connect: { id: technicianRecord.id },
         },
@@ -57,7 +58,7 @@ export async function POST(req: Request) {
             customerId: businessName,
             businessName: businessName,
             address,
-            technicianNotes: notes,
+            technicianNotes: technicianNotes,
             technician: {
               connect: { id: technicianRecord.id },
             },

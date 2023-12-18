@@ -68,10 +68,10 @@ export const NotificationHeader = ({ tag }: NotificationHeaderProps) => {
               <MessagesSquare className="h-3 w-3 mr-1" />
               {tag._count.notification} {/* maybe show # of notifications */}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Created by {tag.technician.email}
-            </p>
           </div>
+          <p className="text-xs text-muted-foreground">
+            Created by {tag.technician.email}
+          </p>
         </div>
       </div>
       <DropdownMenu>

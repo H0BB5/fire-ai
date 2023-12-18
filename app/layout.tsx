@@ -21,7 +21,9 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={cn("bg-background", inter.className)}>
+        <body
+          className={cn("bg-background bg-[url('/grid.svg')]", inter.className)}
+        >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}
             <Toaster />

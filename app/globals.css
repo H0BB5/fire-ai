@@ -33,6 +33,9 @@
     --ring: 221.2 83.2% 53.3%;
 
     --radius: 0.5rem;
+
+    --vc-bg: #0761d1;
+    --vc-bg-secondary: #27272a;
   }
 
   .dark {
@@ -75,6 +78,14 @@
   }
 }
 
+.border-gradient {
+  background-image: radial-gradient(
+    at left top,
+    --vc-bg,
+    50px,
+    --vc-bg-secondary 50%
+  );
+}
 .rdp-vhidden {
   @apply hidden;
 }

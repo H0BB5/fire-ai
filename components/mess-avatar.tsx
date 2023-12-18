@@ -1,4 +1,4 @@
-import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import React from "react";
 
 interface MessAvatarProps {

@@ -5,10 +5,14 @@ import { Upload, Camera } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { setExtraction } from "@/app/store/fire-ai";
+import { setExtraction, useAIStore } from "@/app/store/fire-ai";
 import { useFormContext } from "react-hook-form";
+import { TagFormSkeleton } from "./tag-form/tag-form-skeleton";
+import { TagFormBody } from "./tag-form/tag-form-body";
 interface UploadThingProps extends React.HTMLAttributes<HTMLDivElement> {
   onUpload: (url: string) => void;
+  setIsUploading: (uploading: boolean) => void;
+  onClientUploadComplete: (res: any) => void;
 }
 
 const transformResponse = (response: any) => {
@@ -24,8 +28,14 @@ const transformResponse = (response: any) => {
   };
 };
 
-export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
+export const UploadThing = ({
+  onUpload,
+  setIsUploading,
+  onClientUploadComplete,
+  ...props
+}: UploadThingProps) => {
   const { setValue, getValues } = useFormContext();
+  const { control, formState } = useFormContext();
   const initialImage = getValues("frontTagSrc");
   const [photo, setPhoto] = useState(initialImage);
 
@@ -59,9 +69,10 @@ export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
       <div
         className="
         p-4
-        border-4
+        border-2
         border-dashed
         border-primary/10
+        bg-card
         rounded-lg
         hover:opacity-75
         hover:cursor-pointer
@@ -106,6 +117,7 @@ export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
                   setPhoto(res[0].url);
                   extractText(res[0].url);
                   setValue("frontTagSrc", res[0].url);
+                  setIsUploading(true);
                 }}
                 onUploadError={(error: Error) => {
                   // Do something with the error.

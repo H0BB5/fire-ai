@@ -1,4 +1,4 @@
-import { TagForm } from "@/components/tag-form";
+import { TagForm } from "@/components/tag-form/tag-form";
 import prismadb from "@/lib/prismadb";
 
 /**
@@ -20,7 +20,7 @@ const TagIdPage = async ({ params }: TagIdProps) => {
     },
   });
 
-  return <TagForm initialData={tag} />;
+  return <TagForm defaultValues={tag} />;
 };
 
 export default TagIdPage;

@@ -43,11 +43,12 @@ export const Tags = ({ data }: TagProps) => {
             py-4
             md:py-3
             rounded-md
-            bg-primary/10
+            bg-accent
             hover:opacity-75
             transition
+            border
           `,
-          !tagId ? "bg-primary/25" : "bg-primary/10"
+          !tagId ? "bg-accent" : "bg-accent"
         )}
       >
         Newest
@@ -68,11 +69,12 @@ export const Tags = ({ data }: TagProps) => {
             py-4
             md:py-3
             rounded-md
-            bg-primary/10
+            bg-primary
             hover:opacity-75
             transition
+            border
           `,
-            tag.id === tagId ? "bg-primary/25" : "bg-primary/10"
+            tag.id === tagId ? "bg-card" : "bg-card"
           )}
         >
           {tag.businessName}

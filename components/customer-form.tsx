@@ -35,7 +35,7 @@ const formSchema = z.object({
   }),
   contactName: z.string().optional(),
   contactEmail: z.string().optional(),
-  notes: z.string().optional(),
+  technicianNotes: z.string().optional(),
 });
 
 interface CustomerFormProps {
@@ -72,7 +72,7 @@ export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
       address: initialData?.address || "",
       contactName: initialData?.contactName || "",
       contactEmail: initialData?.contactEmail || "",
-      notes: initialData?.technicianNotes || "",
+      technicianNotes: initialData?.technicianNotes || "",
     },
   });
 
@@ -101,7 +101,7 @@ export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
       });
     }
   };
-
+  console.log("customer form", initialData);
   return (
     <div className="h-full p-4 space-y-2 max-w-3xl mx-auto">
       <Form {...form}>
@@ -189,7 +189,7 @@ export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
           </div>
           <div className="space-y-2 w-full">
             <FormField
-              name="notes"
+              name="technicianNotes"
               control={form.control}
               render={({ field }) => (
                 <FormItem className="col-span-2 md:col-span-1">

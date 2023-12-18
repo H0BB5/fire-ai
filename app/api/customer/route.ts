@@ -16,7 +16,7 @@ export async function POST(req: Request) {
       location,
       serial,
       rating,
-      notes,
+      technicianNotes,
       // expiration
     } = body;
 
@@ -65,6 +65,7 @@ export async function POST(req: Request) {
                 customerId: businessName,
                 businessName: businessName,
                 address,
+                technicianNotes: technicianNotes,
                 technician: {
                   connect: { id: technicianRecord.id },
                 },

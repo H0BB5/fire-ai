@@ -12,7 +12,13 @@ export async function PATCH(
     const body = await req.json();
     const technician = await currentUser();
     console.log("customer PATCH", body);
-    const { businessName, address, contactName, contactEmail, notes } = body;
+    const {
+      businessName,
+      address,
+      contactName,
+      contactEmail,
+      technicianNotes,
+    } = body;
 
     // check if technician is logged in
     if (!technician || !technician.id) {
@@ -63,7 +69,7 @@ export async function PATCH(
         businessName,
         contactName,
         contactEmail,
-        technicianNotes: notes,
+        technicianNotes: technicianNotes,
         address,
       },
     });

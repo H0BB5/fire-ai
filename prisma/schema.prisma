@@ -26,7 +26,7 @@ model Technician {
 model Customer {
   id              String     @id @default(uuid())
   customerId      String     @unique
-  businessName    String     @db.Text
+  businessName    String     @unique @db.VarChar(255)
   address         String
   city            String?
   // Tags associated with this customer
@@ -50,6 +50,7 @@ model Customer {
 
   // indexes
   @@index([technicianId])
+  @@index([businessName])
 }
 
 // When a tag is created a customer is created 

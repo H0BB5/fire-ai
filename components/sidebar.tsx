@@ -3,7 +3,6 @@
 import { cn } from "@/lib/utils";
 import { Home, Tags, Settings, Building2 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-
 export const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();

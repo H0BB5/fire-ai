@@ -28,45 +28,47 @@ export const TagCards = ({ data }: CustomerProps) => {
       {data.map((item) => (
         <Card
           key={item.id}
-          className="bg-card rounded-xl cursor-pointer border shadow-md hover:opacity-75 hover:shadow-lg transition"
+          className="bg-card cursor-pointer shadow-md hover:opacity-75 hover:shadow-lg transition p-px rounded-lg border-gradient"
         >
           <Link href={`/tag/${item.id}`}>
-            <CardHeader className="flex items-center justify-center text-center text-muted-foreground relative pt-4">
-              <span className="absolute top-3 right-3">
-                <TagIcon className="w-3 h-3" />
-              </span>
-              <p className="font-bold">{item.businessName}</p>
-              <div className="relative w-32 h-32">
-                <div className="rounded-xl object-cover shadow-lg">
-                  <Image
-                    src={item.frontTagSrc}
-                    fill
-                    className="rounded-xl object-cover"
-                    alt="customer"
-                  />
+            <div className="bg-card rounded-lg">
+              <CardHeader className="flex items-center justify-center text-center text-muted-foreground pt-4 z-1">
+                <span className="absolute top-3 right-3">
+                  <TagIcon className="w-3 h-3" />
+                </span>
+                <p className="font-bold">{item.businessName}</p>
+                <div className="relative w-32 h-32">
+                  <div className="rounded-xl object-cover shadow-lg">
+                    <Image
+                      src={item.frontTagSrc}
+                      fill
+                      className="rounded-xl object-cover"
+                      alt="customer"
+                    />
+                  </div>
                 </div>
-              </div>
-            </CardHeader>
-            <CardFooter className="flex flex-col text-xs text-muted-foreground pb-4">
-              <div className="w-full">
-                <p className="flex items-center text-xs">
-                  <Flame className="w-3 h-3 mr-1" /> {item.type}
-                </p>
-                <p className="flex items-center text-xs mb-2">
-                  <MapPin className="w-3 h-3 mr-1" />
-                  {item.location}
-                </p>
+              </CardHeader>
+              <CardFooter className="flex flex-col text-xs text-muted-foreground pb-4">
+                <div className="w-full">
+                  <p className="flex items-center text-xs">
+                    <Flame className="w-3 h-3 mr-1" /> {item.type}
+                  </p>
+                  <p className="flex items-center text-xs mb-2">
+                    <MapPin className="w-3 h-3 mr-1" />
+                    {item.location}
+                  </p>
 
-                <div className="flex items-center">
-                  {/* {item._count.tags > 1 ? (
+                  <div className="flex items-center">
+                    {/* {item._count.tags > 1 ? (
                   <Tags className="w-3 h-3 mr-1" />
                 ) : (
                   <TagIcon className="w-3 h-3 mr-1" />
                 )} */}
-                  {/* {item._count.tags} */}
+                    {/* {item._count.tags} */}
+                  </div>
                 </div>
-              </div>
-            </CardFooter>
+              </CardFooter>
+            </div>
           </Link>
         </Card>
       ))}

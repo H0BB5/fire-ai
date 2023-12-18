@@ -76,7 +76,15 @@ form.setValue('date', date);
 - Just finished updating the fire tag to the database // DONE
 - Get initial data to show up on the form when a tag exists // DONE
 - distinguish the customer search from the tag search // DONE
-- Get OPEN AI to fill form with data that it can retrieve
-- maybe hide form until the text extraction is first attempted
+- Get OPEN AI to fill form with data that it can retrieve // DONE
+- maybe hide form until the text extraction is first attempted // DONE
+
 - loading animation for the open ai / text extraction
 - create more generic dashboard (total tags, total submissions, top technician submissions, etc.)
+- Add optional second photo to form submission
+- Create Notification System
+- - Integrate SendGrid
+- - Create Notification Table
+- - Notification Layout
+- - Notification Item
+- Add filters to search pages

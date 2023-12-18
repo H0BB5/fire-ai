@@ -10,20 +10,21 @@ async function main() {
     const technicianId = uuidv4();
     const tagId = uuidv4();
     const customerId = uuidv4();
+    const emailIndex = uuidv4();
 
     const technician = await db.technician.create({
       data: {
         id,
         technicianId,
         firstName: "John",
-        email: "johndoe@example.com",
+        email: `technician${emailIndex}@email.com`,
       },
     });
 
     // Seed Customer data
     const customer = await db.customer.create({
       data: {
-        id: uuidv4(),
+        id: customerId,
         customerId,
         businessName: "Fire Safety Inc.",
         address: "123 Fire Lane, Safety Town, ST 12345",
@@ -33,7 +34,7 @@ async function main() {
         contactEmail: "contact@firesafety.com",
         technician: {
           connect: {
-            technicianId: technicianId,
+            technicianId: technician.technicianId,
           },
         },
       },
@@ -54,7 +55,7 @@ async function main() {
         backTagSrc: "http://placehold.co/300x300/444444/fff.jpg",
         technician: {
           connect: {
-            technicianId: technicianId,
+            technicianId: technician.technicianId,
           },
         },
         customer: {
@@ -65,8 +66,8 @@ async function main() {
       },
     });
 
+    console.log("\x1b[32m%s\x1b[0m", "Success seeding data! 🌱");
     // Seed Notification data (optional, based on your logic)
-    // ...
   } catch (error) {
     console.error("Error seeding data: ", error);
   } finally {

@@ -19,11 +19,10 @@ export async function PATCH(
       location,
       serial,
       rating,
-      notes,
       // expiration
     } = body;
 
-    const { address } = customer;
+    const { address, technicianNotes } = customer;
     // check if technician is logged in
     if (!technician || !technician.id) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -64,19 +63,20 @@ export async function PATCH(
             create: {
               customerId: businessName,
               businessName: businessName,
-              address,
-              technicianNotes: notes,
+              address: address,
+              technicianNotes: technicianNotes,
               technician: {
                 connect: { id: technicianRecord.id },
               },
             },
             update: {
-              businessName,
-              address,
+              businessName: businessName,
+              address: address,
+              technicianNotes: technicianNotes,
             },
           },
         },
-        businessName,
+        businessName: businessName,
         type,
         location,
         serial,
