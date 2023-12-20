@@ -7,8 +7,15 @@ export default function Page() {
     <div className="flex flex-col h-[100svh]">
       <div className="flex items-end h-1/6">
         <Image
-          className="mx-auto mb-6"
-          src="/alexander-safety.png"
+          className="mx-auto mb-6 dark:block hidden"
+          src={"/alexander-safety-logo-light.svg"}
+          alt="Alexander Safety Logo"
+          width={100}
+          height={69}
+        />
+        <Image
+          className="mx-auto mb-6 dark:hidden block"
+          src={"/alexander-safety-logo-dark.svg"}
           alt="Alexander Safety Logo"
           width={100}
           height={69}

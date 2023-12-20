@@ -1,15 +1,12 @@
 "use client";
 
-import { Menu, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 
-import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/mode-toggle";
 import { MobileSidebar } from "./mobile-sidebar";
-import { useTheme } from "next-themes";
 
 const font = Poppins({
   weight: "600",
@@ -17,8 +14,6 @@ const font = Poppins({
 });
 
 export const Navbar = () => {
-  const { theme } = useTheme();
-  console.log(theme);
   return (
     <div className="fixed w-full z-50 flex justify-between py-2 px-4 border-b border-primary/10 bg-background h-16">
       <MobileSidebar />
