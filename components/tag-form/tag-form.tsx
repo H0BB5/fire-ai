@@ -234,7 +234,7 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
                 type="button"
                 size="lg"
                 className={cn({
-                  hidden: currentStep === 0 || currentStage === "Back Tag",
+                  hidden: currentStep === 0 || currentStage === "Scheduling",
                 })}
                 disabled={currentStep <= 1}
                 onClick={() => {
