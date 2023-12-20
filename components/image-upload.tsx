@@ -5,14 +5,15 @@ import { Upload, Camera } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { setExtraction, useAIStore } from "@/app/store/fire-ai";
+import {
+  setExtraction,
+  setExtractingText,
+  useAIStore,
+} from "@/app/store/fire-ai";
 import { useFormContext } from "react-hook-form";
-import { TagFormSkeleton } from "./tag-form/tag-form-skeleton";
-import { TagFormBody } from "./tag-form/tag-form-body";
+
 interface UploadThingProps extends React.HTMLAttributes<HTMLDivElement> {
   onUpload: (url: string) => void;
-  setIsUploading: (uploading: boolean) => void;
-  onClientUploadComplete: (res: any) => void;
 }
 
 const transformResponse = (response: any) => {
@@ -28,18 +29,14 @@ const transformResponse = (response: any) => {
   };
 };
 
-export const UploadThing = ({
-  onUpload,
-  setIsUploading,
-  onClientUploadComplete,
-  ...props
-}: UploadThingProps) => {
+export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
   const { setValue, getValues } = useFormContext();
   const { control, formState } = useFormContext();
   const initialImage = getValues("frontTagSrc");
   const [photo, setPhoto] = useState(initialImage);
 
   const extractText = async (imageUrl: string) => {
+    setExtractingText(true);
     const ocrResponse = await fetch("/api/ai", {
       method: "POST",
       headers: {
@@ -62,6 +59,7 @@ export const UploadThing = ({
       rating: aiExtract.rating,
       lastTestDate: aiExtract.lastTestDate,
     });
+    setExtractingText(false);
   };
 
   return (
@@ -102,14 +100,6 @@ export const UploadThing = ({
                 <Upload className="h-5 w-5" />
               </div>
               <UploadButton
-                // content={{
-                //   // button({ ready, isUploading }) {
-                //   //   if (ready) return "Front Tag";
-                //   //   if (isUploading) return "Scanning...";
-                //   //   return "Loading...";
-                //   // },
-                // }}
-                // change text
                 endpoint="imageUploader"
                 onClientUploadComplete={(res) => {
                   // Do something with the response
@@ -117,10 +107,8 @@ export const UploadThing = ({
                   setPhoto(res[0].url);
                   extractText(res[0].url);
                   setValue("frontTagSrc", res[0].url);
-                  setIsUploading(true);
                 }}
                 onUploadError={(error: Error) => {
-                  // Do something with the error.
                   alert(`ERROR! ${error.message}`);
                 }}
               />

@@ -28,11 +28,11 @@ export const TagCards = ({ data }: CustomerProps) => {
       {data.map((item) => (
         <Card
           key={item.id}
-          className="bg-card cursor-pointer shadow-md hover:opacity-75 hover:shadow-lg transition p-px rounded-lg border-gradient"
+          className="bg-card cursor-pointer shadow-md hover:opacity-75 hover:shadow-lg transition p-px rounded-lg hover:rounded-sm border-gradient"
         >
           <Link href={`/tag/${item.id}`}>
             <div className="bg-card rounded-lg">
-              <CardHeader className="flex items-center justify-center text-center text-muted-foreground pt-4 z-1">
+              <CardHeader className="flex items-center justify-center text-center text-muted-foreground pt-4">
                 <span className="absolute top-3 right-3">
                   <TagIcon className="w-3 h-3" />
                 </span>

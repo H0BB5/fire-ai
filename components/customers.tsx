@@ -30,41 +30,44 @@ export const customers = ({ data }: CustomerProps) => {
       {data.map((item) => (
         <Card
           key={item.id}
-          className="bg-card rounded-xl cursor-pointer border shadow-md hover:opacity-75 hover:shadow-lg transition"
+          className="bg-card rounded-lg cursor-pointer border shadow-md hover:opacity-75 hover:shadow-sm transition"
         >
           <Link href={`/customer/${item.id}`}>
-            <CardHeader className="flex items-center justify-center text-center text-muted-foreground relative">
-              <span className="absolute top-3 right-3">
-                <Building className="w-3 h-3" />
-              </span>
-              <div className="relative w-32 h-32">
-                {/* // since customers have tags and tags have the images
+            <div className="bg-card rounded-lg">
+              <CardHeader className="flex items-center justify-center text-center text-muted-foreground relative">
+                <span className="absolute top-3 right-3">
+                  <Building className="w-3 h-3" />
+                </span>
+                <div className="relative w-32 h-32">
+                  {/* // since customers have tags and tags have the images
                 // we can style the image based off the customer details */}
-                <div className="rounded-xl object-cover">
-                  {/* <Image
+                  <div className="rounded-xl object-cover">
+                    {/* <Image
                   src={item.src}
                   fill
                   className="rounded-xl object-cover"
                   alt="customer"
                 /> */}
-                  <p className="font-bold">{item.businessName}</p>
-                  <p className="text-xs">{item.address}</p>
+                    <p className="font-bold">{item.businessName}</p>
+                    <p className="text-xs">{item.address}</p>
+                  </div>
                 </div>
-              </div>
-            </CardHeader>
-            <CardFooter className="flex items-center justify-between text-xs text-muted-foreground">
-              <p className="lowercase flex items-center">
-                <SquareUser className="w-3 h-3 mr-1" /> {item.technician.email}
-              </p>
-              <div className="flex items-center">
-                {item._count.tags > 1 ? (
-                  <Tags className="w-3 h-3 mr-1" />
-                ) : (
-                  <Tag className="w-3 h-3 mr-1" />
-                )}
-                {item._count.tags}
-              </div>
-            </CardFooter>
+              </CardHeader>
+              <CardFooter className="flex items-center justify-between text-xs text-muted-foreground">
+                <p className="lowercase flex items-center">
+                  <SquareUser className="w-3 h-3 mr-1" />{" "}
+                  {item.technician.email}
+                </p>
+                <div className="flex items-center">
+                  {item._count.tags > 1 ? (
+                    <Tags className="w-3 h-3 mr-1" />
+                  ) : (
+                    <Tag className="w-3 h-3 mr-1" />
+                  )}
+                  {item._count.tags}
+                </div>
+              </CardFooter>
+            </div>
           </Link>
         </Card>
       ))}

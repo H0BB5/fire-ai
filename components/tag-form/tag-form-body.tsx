@@ -45,26 +45,19 @@ enum EQUIPMENT {
 
 const equipmentTypes = [
   {
-    type: EQUIPMENT.Extinguisher,
+    type: "Fire Extinguisher",
   },
   {
-    type: EQUIPMENT.Hose,
+    type: "Fire Hose",
   },
   {
-    type: EQUIPMENT.System,
+    type: "System",
   },
 ];
 
-export const TagFormBody = ({
-  formValues,
-  handleSubmit,
-}: {
-  formValues: any;
-  handleSubmit: any;
-}) => {
+export const TagFormBody = () => {
   const { control, formState } = useFormContext();
   const isLoading = formState.isSubmitting;
-
   return (
     <div className="space-y-8 pb-10">
       <div className="space-y-2 w-full">
@@ -247,12 +240,6 @@ export const TagFormBody = ({
             </FormItem>
           )}
         />
-      </div>
-      <div className="w-full flex justify-content">
-        <Button size="lg" disabled={isLoading}>
-          {formValues ? "Update tag submission" : "Schedule service reminder"}
-          <Wand2 className="w-4 h-4 ml-2" />
-        </Button>
       </div>
     </div>
   );

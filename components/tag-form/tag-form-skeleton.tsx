@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export const TagFormSkeleton = () => {
   return (
-    <div className="absolute w-full space-y-8 top-0 left-0 z-10">
+    <div className="w-full space-y-8 top-0 left-0 z-10">
       <div className="space-y-2 w-full">
         <Skeleton className="mt-1 h-4 w-1/2 md:w-1/4" />
         <Skeleton className="mt-3 h-4 w-3/4 md:w-5/12" />

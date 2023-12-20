@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { FormProvider, useForm } from "react-hook-form";
+
 import {
   Form,
   FormField,
@@ -16,11 +17,16 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
 import { UploadThing } from "@/components/image-upload";
-import { DatePicker } from "@/components/date-picker";
 import { useAIStore } from "@/app/store/fire-ai";
 import { Suspense, useEffect, useState } from "react";
 import { TagFormSkeleton } from "./tag-form-skeleton";
 import { TagFormBody } from "./tag-form-body";
+import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { ArrowLeft, ArrowRight, Wand2 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Attention } from "../attention";
+import { set } from "date-fns";
 
 export interface CompanionFormProps {
   defaultValues:
@@ -60,16 +66,16 @@ export const formSchema = z.object({
 });
 
 export const TagForm = ({ defaultValues }: CompanionFormProps) => {
+  const totalSteps = 5;
+  const [formStep, setFormStep] = useState(0);
   const router = useRouter();
   const { toast } = useToast();
   const aiTagData = useAIStore((state) => state.aiTagData);
-
-  const [isUploading, setIsUploading] = useState(false);
-
   console.log(defaultValues);
   const { address, technicianNotes } = defaultValues?.customer || {};
   const addressValue = address === null ? "" : address;
   const technicianNotesValue = technicianNotes === null ? "" : technicianNotes;
+  const extractingText = useAIStore((state) => state.isExtracting);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -84,7 +90,7 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
 
   useEffect(() => {
     if (aiTagData) {
-      console.log("AI RETREIVED TAG DATA", aiTagData);
+      setFormStep(1);
       form.setValue("businessName", aiTagData.businessName);
       form.setValue("customer.address", aiTagData.address);
       form.setValue("type", aiTagData.type);
@@ -119,7 +125,7 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
     router.refresh();
     router.push("/");
   };
-  console.log("UPLOADING? ", isUploading);
+  console.log("isTextextracting", extractingText);
   return (
     <div className="h-full p-4 space-y-2 max-w-3xl mx-auto">
       <FormProvider {...form}>
@@ -128,36 +134,99 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-8 pb-10"
           >
-            <FormField
-              name="frontTagSrc"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem className="flex flex-col items-center justify-center space-y-4 ">
-                  <FormLabel className="text-lg">Upload Photo of Tag</FormLabel>
-                  <UploadThing
-                    onUpload={(url) => {
-                      setIsUploading(true);
-                      field.onChange(url);
-                    }}
-                    onClientUploadComplete={() => {
-                      setIsUploading(false);
-                    }}
-                    setIsUploading={() => setIsUploading(isUploading)}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
+            <Progress
+              className="w-full max-w-full md:w-2/3 mx-auto"
+              value={(formStep / totalSteps) * 100}
             />
-            {isUploading ? (
-              <TagFormSkeleton />
-            ) : (
-              (aiTagData || defaultValues) && (
-                <TagFormBody
-                  formValues={defaultValues}
-                  handleSubmit={onSubmit}
-                />
-              )
-            )}
+            {/* // Upload Step */}
+            <div className={cn("block", { hidden: formStep > 1 })}>
+              <FormField
+                name="frontTagSrc"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className="flex flex-col items-center justify-center space-y-4 ">
+                    <FormLabel className="text-lg">
+                      <Attention
+                        labels={["Front Tag"]}
+                        color="blue"
+                        animateRerendering={true}
+                        background={true}
+                      >
+                        <div className="flex flex-col items-center justify-center space-y-2 font-light">
+                          <p className="text-md font-semibold">
+                            Front Tag Image
+                          </p>
+                          <p className="text-sm text-center text-primary">
+                            For best results: Make sure the tag is in the center
+                            of the photo and that the text is legible.
+                          </p>
+                        </div>
+                      </Attention>
+                    </FormLabel>
+                    <UploadThing
+                      onUpload={async (url) => {
+                        field.onChange(url);
+                      }}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* // Tag Confirmation Step */}
+            <div className={cn("relative", { hidden: formStep >= 2 })}>
+              {extractingText == true ? (
+                <TagFormSkeleton />
+              ) : (
+                (aiTagData || defaultValues) && <TagFormBody />
+              )}
+            </div>
+            {/* // Back Tag Confirmation Step */}
+
+            {/* // Schedule Reminder Step */}
+            <div className="w-full flex justify-center">
+              <Button
+                type="submit"
+                size="lg"
+                disabled={extractingText}
+                className={cn("hidden", {
+                  block: defaultValues,
+                })}
+              >
+                {defaultValues ? "Update Tag" : "Schedule reminder"}
+                <Wand2 className="w-4 h-4 ml-2" />
+              </Button>
+              <Button
+                type="button"
+                size="lg"
+                variant="ghost"
+                className={cn({ hidden: formStep <= 1 })}
+                onClick={() => {
+                  setFormStep(formStep - 1);
+                }}
+              >
+                Go back <ArrowLeft className="w-4 h-4 ml-2" />
+              </Button>
+              <Button
+                type="button"
+                size="lg"
+                className={cn({ hidden: formStep === 0 })}
+                disabled={formStep === 0}
+                onClick={() => {
+                  // check if zod schema is valid
+                  if (formStep === 1) {
+                    form.trigger().then((isValid) => {
+                      if (isValid) {
+                        setFormStep(formStep + 1);
+                      }
+                    });
+                  }
+                }}
+              >
+                Continue <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
           </form>
         </Form>
       </FormProvider>

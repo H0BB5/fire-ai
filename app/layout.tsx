@@ -11,6 +11,7 @@ const inter = Inter({ subsets: ["latin"], preload: true });
 export const metadata: Metadata = {
   title: "Fire Tag AI",
   description: "Created by Dylan and Lyle",
+  appleWebApp: true,
 };
 
 export default function RootLayout({

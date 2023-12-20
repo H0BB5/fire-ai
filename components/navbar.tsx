@@ -9,6 +9,7 @@ import { UserButton } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/mode-toggle";
 import { MobileSidebar } from "./mobile-sidebar";
+import { useTheme } from "next-themes";
 
 const font = Poppins({
   weight: "600",
@@ -16,6 +17,8 @@ const font = Poppins({
 });
 
 export const Navbar = () => {
+  const { theme } = useTheme();
+  console.log(theme);
   return (
     <div className="fixed w-full z-50 flex justify-between py-2 px-4 border-b border-primary/10 bg-background h-16">
       <MobileSidebar />
@@ -23,10 +26,19 @@ export const Navbar = () => {
       <div className="flex items-center">
         <Link href="/">
           <Image
-            src="/alexander-safety.png"
+            className={"dark:block hidden"}
+            src={"/alexander-safety-logo-light.svg"}
             alt="Alexander Safety Logo"
-            width={80}
-            height={55}
+            width={75}
+            height={52}
+            priority={true}
+          />
+          <Image
+            className={"dark:hidden block"}
+            src={"/alexander-safety-logo-dark.svg"}
+            alt="Alexander Safety Logo"
+            width={75}
+            height={52}
             priority={true}
           />
         </Link>
