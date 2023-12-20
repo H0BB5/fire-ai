@@ -23,8 +23,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useMultiStepStore } from "@/lib/store/create-tag-slice";
 
+type TagType = "frontTagSrc" | "backTagSrc";
 interface UploadThingProps extends React.HTMLAttributes<HTMLDivElement> {
+  tagType: TagType;
   onUpload: (url: string) => void;
 }
 
@@ -41,17 +44,22 @@ const transformResponse = (response: any) => {
   };
 };
 
-export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
+export const UploadThing = ({
+  onUpload,
+  tagType,
+  ...props
+}: UploadThingProps) => {
   const { setValue, getValues } = useFormContext();
   const { control, formState } = useFormContext();
-  const initialImage = getValues("frontTagSrc");
+  const initialImage = getValues(tagType);
   const [photo, setPhoto] = useState(initialImage);
-
+  const incrementStep = useMultiStepStore((state) => state.increment);
   return (
     <div className="space-y-4 w-full flex flex-col justify-center items-center">
       <div
         className="
         p-4
+        mt-4
         border-2
         dark:border-[1.5px]
         border-dashed
@@ -131,7 +139,7 @@ export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
                 console.log("Files: ", res);
                 setPhoto(res[0].url);
                 extractText(res[0].url);
-                setValue("frontTagSrc", res[0].url);
+                setValue(tagType, res[0].url);
               }}
               onUploadError={(error: Error) => {
                 alert(`ERROR! ${error.message}`);

@@ -1,11 +1,15 @@
 import {
   setTagData,
   setExtractingFrontTag,
+  useMultiStepStore,
 } from "@/lib/store/create-tag-slice";
 import { ExtractedData } from "@/lib/store/types/state";
-
+import { use } from "react";
+const incrementStep = useMultiStepStore.getState().increment;
 export const extractText = async (imageUrl: string) => {
   setExtractingFrontTag(true);
+  incrementStep();
+
   const ocrResponse = await fetch("/api/ai", {
     method: "POST",
     headers: {
@@ -29,5 +33,6 @@ export const extractText = async (imageUrl: string) => {
     rating: aiExtract.rating,
     lastTestDate: aiExtract.lastTestDate,
   });
+
   setExtractingFrontTag(false);
 };

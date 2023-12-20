@@ -71,7 +71,7 @@ const createMultiSlice: StateCreator<
   stage: StageName.FrontTag,
   stepName: StepNames.FrontTag,
   totalSteps: 6,
-  currentStep: 1,
+  currentStep: 0,
   reset: () => set({ currentStep: 1 }),
   stepTo: (step: number) => set({ currentStep: step }),
   increment: () => set((state) => ({ currentStep: state.currentStep + 1 })),

@@ -18,7 +18,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { UploadThing } from "@/components/image-upload";
 import { useAIStore } from "@/app/store/fire-ai";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, use, useEffect, useState } from "react";
 import { TagFormSkeleton } from "./tag-form-skeleton";
 import { TagFormBody } from "./tag-form-body";
 import { cn } from "@/lib/utils";
@@ -30,8 +30,12 @@ import { set } from "date-fns";
 import { FrontTagStep } from "./tag/front-tag";
 import {
   useFrontTagStore,
+  useMultiStepStore,
   useTagDataStore,
 } from "@/lib/store/create-tag-slice";
+import { StepStates } from "@/lib/store/types/state";
+import { BackTagStep } from "./tag/back-tag";
+import { NotificationStep } from "./tag/notification-tag";
 
 export interface CompanionFormProps {
   defaultValues:
@@ -72,6 +76,12 @@ export const formSchema = z.object({
 
 export const TagForm = ({ defaultValues }: CompanionFormProps) => {
   const totalSteps = 5;
+  const currentStage = useMultiStepStore((state) => state.stage);
+  console.log("currentStage", currentStage);
+  const currentStep = useMultiStepStore((state) => state.currentStep);
+  console.log("currentStep", currentStep);
+  const incrementStep = useMultiStepStore((state) => state.increment);
+  const setStage = useMultiStepStore((state) => state.setStage);
   const [formStep, setFormStep] = useState(0);
   const router = useRouter();
   const { toast } = useToast();
@@ -114,7 +124,7 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
 
   useEffect(() => {
     if (aiTagData) {
-      setFormStep(1);
+      incrementStep();
       setValue("businessName", aiTagData.businessName);
       setValue("customer.address", aiTagData.address);
       setValue("type", aiTagData.type);
@@ -123,7 +133,7 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
       setValue("rating", aiTagData.rating);
       //form.setValue('lastTestDate', aiTagData.lastTestDate);
     }
-  }, [setValue, aiTagData]);
+  }, [setValue, aiTagData, incrementStep]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
@@ -150,6 +160,8 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
     router.push("/");
   };
   console.log("isTextextracting", extractingText);
+  console.log("formStep", formStep);
+
   return (
     <div className="h-full p-4 space-y-2 max-w-3xl mx-auto">
       <FormProvider {...form}>
@@ -161,14 +173,17 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
             {!defaultValues && (
               <Progress
                 className="w-full max-w-full md:w-2/3 mx-auto mt-4"
-                value={(formStep / totalSteps) * 100}
+                value={(currentStep / totalSteps) * 100}
               />
             )}
             {/* // Upload Step */}
             <FrontTagStep />
-
             {/* // Tag Confirmation Step */}
-            <div className={cn("relative", { hidden: formStep >= 2 })}>
+            <div
+              className={cn("relative", {
+                hidden: currentStage != "Front Tag",
+              })}
+            >
               {extractingText == true ? (
                 <TagFormSkeleton />
               ) : (
@@ -176,9 +191,21 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
               )}
             </div>
             {/* // Back Tag Confirmation Step */}
-
+            <div
+              className={cn("relative", {
+                block: currentStage === "Back Tag",
+              })}
+            >
+              <BackTagStep />
+            </div>
             {/* // Schedule Reminder Step */}
-
+            <div
+              className={cn("hidden", {
+                block: currentStage === "Scheduling",
+              })}
+            >
+              <NotificationStep />
+            </div>
             {/* // Submit Step */}
             <div className="w-full flex justify-center">
               <Button
@@ -196,9 +223,9 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
                 type="button"
                 size="lg"
                 variant="ghost"
-                className={cn({ hidden: formStep <= 1 })}
+                className={cn({ hidden: currentStage === "Front Tag" })}
                 onClick={() => {
-                  setFormStep(formStep - 1);
+                  incrementStep();
                 }}
               >
                 Go back <ArrowLeft className="w-4 h-4 ml-2" />
@@ -206,16 +233,25 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
               <Button
                 type="button"
                 size="lg"
-                className={cn({ hidden: formStep === 0 })}
-                disabled={formStep === 0}
+                className={cn({ hidden: currentStep === 0 })}
+                disabled={currentStep <= 1}
                 onClick={() => {
                   // check if zod schema is valid
-                  if (formStep === 1) {
+                  if (currentStage === "Front Tag") {
                     form.trigger().then((isValid) => {
                       if (isValid) {
-                        setFormStep(formStep + 1);
+                        if (currentStage === "Front Tag") {
+                          setStage("Back Tag" as StepStates["stage"]);
+                        } else {
+                          setStage("Scheduling" as StepStates["stage"]);
+                        }
+                        incrementStep();
                       }
                     });
+                  }
+                  if (currentStage === "Back Tag") {
+                    setStage("Scheduling" as StepStates["stage"]);
+                    incrementStep();
                   }
                 }}
               >
