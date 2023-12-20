@@ -16,26 +16,26 @@ This project is an AI driven sales tool for fire safety equipment. It is designe
   - [x] Merging
 - [ ] Database
   - [x] Functionality
-  - [ ] Schema
-    - [ ] Search Tags
+  - [x] Schema
+    - [x] Search Tags
     - [ ] Filter Tags
-    - [ ] List All Tags
-    - [ ] Create Submission
-- [ ] User Interface
-  - [ ] Flow
-  - [ ] Search
-  - [ ] Dashboard
-  - [ ] Submission
-  - [ ] Form
-  - [ ] Results
-- [ ] Authentication
-  - [ ] Organization setup
-- [ ] API
-  - [ ] Functionality
-- [ ] AI
-  - [ ] OCR
+    - [x] List All Tags
+    - [x] Create Submission
+- [x] User Interface
+  - [x] Flow
+  - [x] Search
+  - [x] Dashboard
+  - [x] Submission
+  - [x] Form
+  - [x] Results
+- [x] Authentication
+  - [x] Organization setup
+- [x] API
+  - [x] Functionality
+- [x] AI
+  - [x] OCR
 - [ ] Testing
-- [ ] Deployment
+- [x] Deployment
 
 ### Notes
 
@@ -47,14 +47,7 @@ This project is an AI driven sales tool for fire safety equipment. It is designe
 
 #### ToDo's
 
-- Handle upload of images better
-- Sort out customer vs tag submission/edits
 - Integrate auto email sending we can use services like mailgun, sendgrid, etc.
-
-##### User Routes
-
-Dash -> Customer (first tag) -> Creates Customer Record & also
--> Creates Tag ->
 
 ##### Done
 
@@ -73,18 +66,27 @@ form.setValue('date', date);
 
 ## TO-DO
 
-- Just finished updating the fire tag to the database // DONE
-- Get initial data to show up on the form when a tag exists // DONE
-- distinguish the customer search from the tag search // DONE
-- Get OPEN AI to fill form with data that it can retrieve // DONE
-- maybe hide form until the text extraction is first attempted // DONE
+- [x] Split up the form into multiple pages
+- [ ] Add back tag upload
+- [ ] Add Calendar to DB and Form
+- [ ] Add optional second photo to form submission
+- [ ] create more generic dashboard (total tags, total submissions, top technician submissions, etc.)
+- [ ] Create Notification System
+- [ ] Integrate SendGrid
+- [ ] Create Notification Table // DONE
+- [ ] Notification Layout
+- [ ] Notification Item
+- [ ] Add filters to search pages
 
-- loading animation for the open ai / text extraction
-- create more generic dashboard (total tags, total submissions, top technician submissions, etc.)
-- Add optional second photo to form submission
-- Create Notification System
-- - Integrate SendGrid
-- - Create Notification Table
-- - Notification Layout
-- - Notification Item
-- Add filters to search pages
+### Tag Creation
+
+// Customer Data Related
+
+- [x] Step 1: Front Tag Image
+- [x] Step 2: Confirm Extraction / Fields
+
+// Sales Data Related
+
+- [ ] Step 3: Back Tag Image
+- [ ] Step 4: Confirm / Set Expiration Date
+- [ ] Step 5: Create Submission

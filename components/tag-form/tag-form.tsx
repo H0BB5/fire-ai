@@ -158,10 +158,12 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-8 pb-10"
           >
-            <Progress
-              className="w-full max-w-full md:w-2/3 mx-auto"
-              value={(formStep / totalSteps) * 100}
-            />
+            {!defaultValues && (
+              <Progress
+                className="w-full max-w-full md:w-2/3 mx-auto mt-4"
+                value={(formStep / totalSteps) * 100}
+              />
+            )}
             {/* // Upload Step */}
             <FrontTagStep />
 
@@ -176,13 +178,15 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
             {/* // Back Tag Confirmation Step */}
 
             {/* // Schedule Reminder Step */}
+
+            {/* // Submit Step */}
             <div className="w-full flex justify-center">
               <Button
                 type="submit"
                 size="lg"
                 disabled={extractingText}
                 className={cn("hidden", {
-                  block: defaultValues,
+                  flex: defaultValues,
                 })}
               >
                 {defaultValues ? "Update Tag" : "Schedule reminder"}
