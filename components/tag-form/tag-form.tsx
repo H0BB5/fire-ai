@@ -27,6 +27,7 @@ import { ArrowLeft, ArrowRight, Wand2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Attention } from "../attention";
 import { set } from "date-fns";
+import { FrontTagStep } from "./tag/front-tag";
 
 export interface CompanionFormProps {
   defaultValues:
@@ -80,26 +81,45 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ...defaultValues,
+      frontTagSrc: "",
+      businessName: "",
+      type: "",
+      location: "",
+      serial: "",
+      rating: "",
       customer: {
-        address: addressValue,
-        technicianNotes: technicianNotesValue,
+        address: "",
+        technicianNotes: "",
       },
     },
   });
+  const { setValue } = form;
+
+  useEffect(() => {
+    if (defaultValues) {
+      setValue("frontTagSrc", defaultValues.frontTagSrc);
+      setValue("businessName", defaultValues.businessName);
+      setValue("type", defaultValues.type);
+      setValue("location", defaultValues.location);
+      setValue("serial", defaultValues.serial);
+      setValue("rating", defaultValues.rating);
+      setValue("customer.address", addressValue);
+      setValue("customer.technicianNotes", technicianNotesValue);
+    }
+  }, [defaultValues, addressValue, technicianNotesValue, setValue]);
 
   useEffect(() => {
     if (aiTagData) {
       setFormStep(1);
-      form.setValue("businessName", aiTagData.businessName);
-      form.setValue("customer.address", aiTagData.address);
-      form.setValue("type", aiTagData.type);
-      form.setValue("location", aiTagData.location);
-      form.setValue("serial", aiTagData.serial);
-      form.setValue("rating", aiTagData.rating);
+      setValue("businessName", aiTagData.businessName);
+      setValue("customer.address", aiTagData.address);
+      setValue("type", aiTagData.type);
+      setValue("location", aiTagData.location);
+      setValue("serial", aiTagData.serial);
+      setValue("rating", aiTagData.rating);
       //form.setValue('lastTestDate', aiTagData.lastTestDate);
     }
-  }, [form, aiTagData]);
+  }, [setValue, aiTagData]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
@@ -139,40 +159,7 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
               value={(formStep / totalSteps) * 100}
             />
             {/* // Upload Step */}
-            <div className={cn("block", { hidden: formStep > 1 })}>
-              <FormField
-                name="frontTagSrc"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="flex flex-col items-center justify-center space-y-4 ">
-                    <FormLabel className="text-lg">
-                      <Attention
-                        labels={["Front Tag"]}
-                        color="blue"
-                        animateRerendering={true}
-                        background={true}
-                      >
-                        <div className="flex flex-col items-center justify-center space-y-2 font-light">
-                          <p className="text-md font-semibold">
-                            Front Tag Image
-                          </p>
-                          <p className="text-sm text-center text-primary">
-                            For best results: Make sure the tag is in the center
-                            of the photo and that the text is legible.
-                          </p>
-                        </div>
-                      </Attention>
-                    </FormLabel>
-                    <UploadThing
-                      onUpload={async (url) => {
-                        field.onChange(url);
-                      }}
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FrontTagStep />
 
             {/* // Tag Confirmation Step */}
             <div className={cn("relative", { hidden: formStep >= 2 })}>
