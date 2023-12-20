@@ -53,8 +53,10 @@ export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
         className="
         p-4
         border-2
+        dark:border-[1.5px]
         border-dashed
-        border-primary/10
+        border-h0bb5-blue200
+        dark:border-h0bb5-blue100/40
         bg-card
         rounded-lg
         hover:opacity-75
