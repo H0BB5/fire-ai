@@ -24,16 +24,16 @@ export const Navbar = () => {
             className={"dark:block hidden"}
             src={"/alexander-safety-logo-light.svg"}
             alt="Alexander Safety Logo"
-            width={75}
-            height={52}
+            width={58}
+            height={40}
             priority={true}
           />
           <Image
             className={"dark:hidden block"}
             src={"/alexander-safety-logo-dark.svg"}
             alt="Alexander Safety Logo"
-            width={75}
-            height={52}
+            width={58}
+            height={40}
             priority={true}
           />
         </Link>
