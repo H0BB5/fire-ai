@@ -213,7 +213,7 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
                 size="lg"
                 disabled={extractingText}
                 className={cn("hidden", {
-                  flex: defaultValues,
+                  flex: defaultValues || currentStage === "Scheduling",
                 })}
               >
                 {defaultValues ? "Update Tag" : "Schedule reminder"}
@@ -233,7 +233,9 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
               <Button
                 type="button"
                 size="lg"
-                className={cn({ hidden: currentStep === 0 })}
+                className={cn({
+                  hidden: currentStep === 0 || currentStage === "Back Tag",
+                })}
                 disabled={currentStep <= 1}
                 onClick={() => {
                   // check if zod schema is valid
