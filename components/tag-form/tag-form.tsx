@@ -209,17 +209,6 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
             {/* // Submit Step */}
             <div className="w-full flex justify-center">
               <Button
-                type="submit"
-                size="lg"
-                disabled={extractingText}
-                className={cn("hidden", {
-                  flex: defaultValues || currentStage === "Scheduling",
-                })}
-              >
-                {defaultValues ? "Update Tag" : "Schedule reminder"}
-                <Wand2 className="w-4 h-4 ml-2" />
-              </Button>
-              <Button
                 type="button"
                 size="lg"
                 variant="ghost"
@@ -230,6 +219,18 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
               >
                 Go back <ArrowLeft className="w-4 h-4 ml-2" />
               </Button>
+              <Button
+                type="submit"
+                size="lg"
+                disabled={extractingText}
+                className={cn("hidden", {
+                  flex: defaultValues || currentStage === "Scheduling",
+                })}
+              >
+                {defaultValues ? "Update Tag" : "Schedule reminder"}
+                <Wand2 className="w-4 h-4 ml-2" />
+              </Button>
+
               <Button
                 type="button"
                 size="lg"
