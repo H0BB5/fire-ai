@@ -57,11 +57,10 @@ export interface BackTagActions {
 }
 
 export interface TagState {
-  data: ExtractedData;
+  data: ExtractedData | null;
 }
 export interface TagDataActions {
   setTagData: (data: ExtractedData) => void;
-  setTagDataProperty: (property: keyof ExtractedData, value: any) => void;
 }
 
 export interface StepStates {

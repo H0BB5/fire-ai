@@ -28,6 +28,10 @@ import { Progress } from "@/components/ui/progress";
 import { Attention } from "../attention";
 import { set } from "date-fns";
 import { FrontTagStep } from "./tag/front-tag";
+import {
+  useFrontTagStore,
+  useTagDataStore,
+} from "@/lib/store/create-tag-slice";
 
 export interface CompanionFormProps {
   defaultValues:
@@ -71,12 +75,12 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
   const [formStep, setFormStep] = useState(0);
   const router = useRouter();
   const { toast } = useToast();
-  const aiTagData = useAIStore((state) => state.aiTagData);
+  const aiTagData = useTagDataStore((state) => state.data);
   console.log(defaultValues);
   const { address, technicianNotes } = defaultValues?.customer || {};
   const addressValue = address === null ? "" : address;
   const technicianNotesValue = technicianNotes === null ? "" : technicianNotes;
-  const extractingText = useAIStore((state) => state.isExtracting);
+  const extractingText = useFrontTagStore((state) => state.extracting);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

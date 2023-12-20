@@ -11,6 +11,7 @@ import {
   useAIStore,
 } from "@/app/store/fire-ai";
 import { useFormContext } from "react-hook-form";
+import { extractText } from "./tag-form/actions/extract-text";
 
 interface UploadThingProps extends React.HTMLAttributes<HTMLDivElement> {
   onUpload: (url: string) => void;
@@ -34,33 +35,6 @@ export const UploadThing = ({ onUpload, ...props }: UploadThingProps) => {
   const { control, formState } = useFormContext();
   const initialImage = getValues("frontTagSrc");
   const [photo, setPhoto] = useState(initialImage);
-
-  const extractText = async (imageUrl: string) => {
-    setExtractingText(true);
-    const ocrResponse = await fetch("/api/ai", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ imageUrl: imageUrl }),
-    });
-    const { response } = await ocrResponse.json();
-    const cleaned = response.replace(/`/g, "");
-    const jsonString = cleaned.replace("json", "");
-    const aiExtract = JSON.parse(jsonString);
-    console.log("OCR Response Body:", response); // Log the raw response body
-    setExtraction({
-      nameOfTagIssuer: aiExtract.nameOfTagIssuer,
-      businessName: aiExtract.customerName,
-      address: aiExtract.address,
-      type: aiExtract.type,
-      location: aiExtract.location,
-      serial: aiExtract.serial,
-      rating: aiExtract.rating,
-      lastTestDate: aiExtract.lastTestDate,
-    });
-    setExtractingText(false);
-  };
 
   return (
     <div className="space-y-4 w-full flex flex-col justify-center items-center">

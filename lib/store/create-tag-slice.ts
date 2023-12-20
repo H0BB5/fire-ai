@@ -58,10 +58,8 @@ const createTagDataSlice: StateCreator<
   [],
   TagDataSlice
 > = (set) => ({
-  data: {} as ExtractedData,
+  data: null,
   setTagData: (data: ExtractedData) => set({ data }),
-  setTagDataProperty: (property: keyof ExtractedData, value: any) =>
-    set((state) => ({ data: { ...state.data, [property]: value } })),
 });
 
 const createMultiSlice: StateCreator<
@@ -99,9 +97,6 @@ export const useTagDataStore = create<TagState & TagDataActions>()((...a) => ({
 
 export const setTagData = (data: ExtractedData) =>
   useTagDataStore.setState({ data });
-
-export const setTagDataProperty = (data: Partial<ExtractedData>) =>
-  useTagDataStore.setState((state) => ({ data: { ...state.data, ...data } }));
 
 export const useMultiStepStore = create<FrontTagSlice & MultiSlice>()(
   (...a) => ({
