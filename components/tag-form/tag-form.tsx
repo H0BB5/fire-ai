@@ -8,25 +8,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { FormProvider, useForm } from "react-hook-form";
 
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
-import { UploadThing } from "@/components/image-upload";
-import { useAIStore } from "@/app/store/fire-ai";
-import { Suspense, use, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { TagFormSkeleton } from "./tag-form-skeleton";
 import { TagFormBody } from "./tag-form-body";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { ArrowLeft, ArrowRight, Wand2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import { Attention } from "../attention";
-import { set } from "date-fns";
 import { FrontTagStep } from "./tag/front-tag";
 import {
   useFrontTagStore,
@@ -72,6 +62,9 @@ export const formSchema = z.object({
   rating: z.string().min(1, {
     message: "Rating is required",
   }),
+  backTagSrc: z.string().optional(),
+  notificationMethods: z.string().optional(),
+  sendDate: z.string().optional(),
 });
 
 export const TagForm = ({ defaultValues }: CompanionFormProps) => {
@@ -82,7 +75,6 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
   console.log("currentStep", currentStep);
   const incrementStep = useMultiStepStore((state) => state.increment);
   const setStage = useMultiStepStore((state) => state.setStage);
-  const [formStep, setFormStep] = useState(0);
   const router = useRouter();
   const { toast } = useToast();
   const aiTagData = useTagDataStore((state) => state.data);
@@ -105,6 +97,9 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
         address: "",
         technicianNotes: "",
       },
+      backTagSrc: "",
+      notificationMethods: "",
+      sendDate: "",
     },
   });
   const { setValue } = form;
@@ -160,7 +155,6 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
     router.push("/");
   };
   console.log("isTextextracting", extractingText);
-  console.log("formStep", formStep);
 
   return (
     <div className="h-full p-4 space-y-2 max-w-3xl mx-auto">
@@ -208,29 +202,24 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
             </div>
             {/* // Submit Step */}
             <div className="w-full flex justify-center">
+              {/* Back Button */}
               <Button
                 type="button"
                 size="lg"
                 variant="ghost"
                 className={cn({ hidden: currentStage === "Front Tag" })}
                 onClick={() => {
-                  incrementStep();
+                  if (currentStage === "Back Tag") {
+                    setStage("Front Tag" as StepStates["stage"]);
+                  } else {
+                    setStage("Back Tag" as StepStates["stage"]);
+                  }
                 }}
               >
-                Go back <ArrowLeft className="w-4 h-4 ml-2" />
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Go back
               </Button>
-              <Button
-                type="submit"
-                size="lg"
-                disabled={extractingText}
-                className={cn("hidden", {
-                  flex: defaultValues || currentStage === "Scheduling",
-                })}
-              >
-                {defaultValues ? "Update Tag" : "Schedule reminder"}
-                <Wand2 className="w-4 h-4 ml-2" />
-              </Button>
-
+              {/* Next Button */}
               <Button
                 type="button"
                 size="lg"
@@ -239,9 +228,9 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
                 })}
                 disabled={currentStep <= 1}
                 onClick={() => {
-                  // check if zod schema is valid
                   if (currentStage === "Front Tag") {
                     form.trigger().then((isValid) => {
+                      // check if zod schema is valid
                       if (isValid) {
                         if (currentStage === "Front Tag") {
                           setStage("Back Tag" as StepStates["stage"]);
@@ -259,6 +248,18 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
                 }}
               >
                 Continue <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                size="lg"
+                disabled={extractingText}
+                className={cn("hidden", {
+                  flex: defaultValues || currentStage === "Scheduling",
+                })}
+              >
+                {defaultValues ? "Update Tag" : "Schedule reminder"}
+                <Wand2 className="w-4 h-4 ml-2" />
               </Button>
             </div>
           </form>

@@ -1,5 +1,4 @@
 import { StateCreator, create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
 import {
   FrontTagState,
   FrontTagActions,

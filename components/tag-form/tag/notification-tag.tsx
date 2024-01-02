@@ -12,19 +12,19 @@ import {
 import { cn } from "@/lib/utils";
 import { useFormContext } from "react-hook-form";
 import { DatePicker } from "@/components/date-picker";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Bold, Italic, Mail, Underline, MessageCircle } from "lucide-react";
+import { Mail, MessageCircle } from "lucide-react";
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 export const NotificationStep = () => {
   const form = useFormContext();
-  const { control } = form;
+  const { control, setValue, getValues, formState } = form;
+  const handleChange = (value: string[]) => {
+    setValue("notificationMethod", value);
+  };
   const currentStage = useMultiStepStore((state) => state.stage);
-  const updateStep = useMultiStepStore((state) => state.updateStep);
+  const dateValue = getValues("sendDate");
 
-  const isLoading = form.formState.isSubmitting;
   return (
     <div className={cn("block", { block: currentStage === "Front Tag" })}>
       <FormField
@@ -50,7 +50,7 @@ export const NotificationStep = () => {
             </FormLabel>
             <div className="mt-4 flex flex-col justify-center items-center w-full space-y-4">
               <FormField
-                name="rating"
+                name="notificationMethod"
                 control={control}
                 render={({ field }) => (
                   <FormItem className="flex align-center items-center justify-between max-w-[280px] col-span-2 md:col-span-1">
@@ -59,7 +59,10 @@ export const NotificationStep = () => {
                         <FormLabel>Notification method: </FormLabel>
                       </div>
                       <FormControl>
-                        <ToggleGroup type="multiple">
+                        <ToggleGroup
+                          type="multiple"
+                          onValueChange={handleChange}
+                        >
                           <ToggleGroupItem
                             value="email"
                             aria-label="Toggle email"
@@ -81,9 +84,9 @@ export const NotificationStep = () => {
                 )}
               />
               <FormMessage />
-              <div className="mx-auto">
-                <DatePicker />
-              </div>
+            </div>
+            <div className="mx-auto">
+              <DatePicker value={dateValue} />
             </div>
           </FormItem>
         )}

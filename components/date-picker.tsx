@@ -11,22 +11,44 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useFormContext } from "react-hook-form";
 
 interface Props {
   initialDate?: Date;
+  value?: Date;
 }
 
-export function DatePicker({ initialDate }: Props) {
-  const [date, setDate] = useState<Date | undefined>(
+export function DatePicker({ initialDate, value }: Props) {
+  const { setValue } = useFormContext();
+
+  useEffect(() => {
+    if (value) {
+      setDate(value);
+    }
+  }, [value]);
+
+  const handleDate = (date: Date) => {
+    setDate(date);
+    const newStringDate = format(date, "PPP");
+    setStringDate(newStringDate);
+    setValue("sendDate", newStringDate);
+  };
+
+  const [date, setDate] = useState<Date>(
     initialDate ? initialDate : new Date()
   );
+
+  if (!date) {
+    let date = new Date();
+    setDate(date);
+  }
   const [stringDate, setStringDate] = useState(
     initialDate ? format(initialDate, "PPP") : format(new Date(), "PPP")
   );
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   return (
-    <Popover key={date?.getDate()}>
+    <Popover>
       <div className="relative w-[280px]">
         <Input
           type="string"
@@ -74,8 +96,8 @@ export function DatePicker({ initialDate }: Props) {
           defaultMonth={date}
           onSelect={(selectedDate) => {
             if (!selectedDate) return;
-            setDate(selectedDate);
-            setStringDate(format(selectedDate, "PPP"));
+            handleDate(selectedDate);
+
             setErrorMessage("");
           }}
           fromYear={1960}

@@ -101,7 +101,7 @@ model Notification {
   body       String
 
   status   String
-  sendDate DateTime
+  sendDate DateTime?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

@@ -17,10 +17,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useMultiStepStore } from "@/lib/store/create-tag-slice";
@@ -98,8 +95,9 @@ export const UploadThing = ({
               <AlertDialogContent>
                 <Image
                   alt="Upload"
-                  width={400}
-                  height={400}
+                  width={800}
+                  height={800}
+                  layout="responsive"
                   src={initialImage ? initialImage : "/empty.png"}
                   className={cn(
                     initialImage
@@ -112,7 +110,7 @@ export const UploadThing = ({
                   <AlertDialogAction
                     onClick={() => {
                       setPhoto(null);
-                      setValue("frontTagSrc", null);
+                      setValue(tagType, null);
                     }}
                   >
                     Delete
@@ -137,9 +135,12 @@ export const UploadThing = ({
               onClientUploadComplete={(res) => {
                 // Do something with the response
                 console.log("Files: ", res);
+                // set photo in state
                 setPhoto(res[0].url);
-                extractText(res[0].url);
+                // set image value in react hook form
                 setValue(tagType, res[0].url);
+                // hit the AI endpoint
+                if (tagType === "frontTagSrc") extractText(res[0].url);
               }}
               onUploadError={(error: Error) => {
                 alert(`ERROR! ${error.message}`);

@@ -6,11 +6,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Wand2 } from "lucide-react";
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { DatePicker } from "../date-picker";
-import { TagFormSkeleton } from "./tag-form-skeleton";
 import {
   FormField,
   FormItem,
@@ -22,9 +18,6 @@ import {
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { useForm, useFormContext } from "react-hook-form";
-import { CompanionFormProps } from "./tag-form";
-import { Customer, Tag } from "@prisma/client";
-import { useAIStore } from "@/app/store/fire-ai";
 
 type TagExtraction = {
   nameOfTagIssuer: string;
@@ -118,6 +111,7 @@ export const TagFormBody = () => {
             <FormItem className="col-span-2 md:col-span-1">
               <FormLabel>Equipment Type</FormLabel>
               <Select
+                name="type"
                 disabled={isLoading}
                 onValueChange={field.onChange}
                 value={field.value}
@@ -209,7 +203,6 @@ export const TagFormBody = () => {
             </FormItem>
           )}
         />
-        <DatePicker />
       </div>
       {/* TECHNICIAN NOTES */}
       <div className="space-y-2 w-full">

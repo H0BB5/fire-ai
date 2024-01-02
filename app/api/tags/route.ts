@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
 import prismadb from "@/lib/prismadb";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export async function POST(req: Request) {
   try {
@@ -10,13 +11,15 @@ export async function POST(req: Request) {
     const technician = await currentUser();
     const {
       frontTagSrc,
-      // backTagSrc,
+      backTagSrc = null,
       businessName,
       customer,
       type,
       location,
       serial,
       rating,
+      notificationMethod = "email",
+      sendDate,
       // expiration
     } = body;
     const { address, technicianNotes } = customer;
@@ -46,6 +49,7 @@ export async function POST(req: Request) {
     }
 
     const tagId = uuidv4();
+    const notificationId = uuidv4();
     // Create the tag with either a new customer or connect to an existing one
     const tag = await prismadb.tag.create({
       data: {
@@ -70,12 +74,42 @@ export async function POST(req: Request) {
         serial,
         rating,
         frontTagSrc,
+        backTagSrc,
       },
     });
+
+    if (sendDate) {
+      const dateWithoutSuffix = sendDate.replace(/(st|nd|rd|th)/, "");
+      const date = new Date(dateWithoutSuffix);
+      const isoDate = date.toISOString();
+      await prismadb.notification.create({
+        data: {
+          id: notificationId,
+          title: "Reminder Title",
+          body: "Body",
+          status: "Scheduled",
+          tag: {
+            connect: { id: tag.id },
+          },
+          customer: {
+            connect: { id: tag.customerId },
+          },
+          sendDate: isoDate,
+        },
+      });
+    }
 
     return NextResponse.json(tag);
   } catch (error) {
     console.log("[TAG_POST]", error);
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      console.error("Unique constraint violation:", error.meta?.target);
+    } else {
+      console.error("An unknown error occurred:", error);
+    }
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
