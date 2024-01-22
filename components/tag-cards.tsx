@@ -42,7 +42,7 @@ export const TagCards = ({ data }: CustomerProps) => {
                     <Image
                       src={item.frontTagSrc}
                       fill
-                      className="rounded-xl object-cover"
+                      className="rounded-xl"
                       alt="customer"
                     />
                   </div>

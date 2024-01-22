@@ -1,24 +1,16 @@
-"use client";
+import { Button } from "@/components/ui/button";
+import { SubmitButton } from "./_components/submit-button";
 
-import { useChat } from "ai/react";
-
-export default function Settings() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
-
+export default async function Settings() {
+  async function testNotifications() {
+    "use server";
+  }
   return (
-    <div>
-      {messages.map((m) => (
-        <div key={m.id}>
-          {m.role}: {m.content}
-        </div>
-      ))}
-
-      <form onSubmit={handleSubmit}>
-        <label>
-          Say something...
-          <input value={input} onChange={handleInputChange} />
-        </label>
-      </form>
+    <div className="h-full p-4 lg:px-8 lg:pt-6 space-y-2">
+      <h1 className="flex items-center font-medium text-xl md:text-2xl">
+        Settings
+      </h1>
+      <SubmitButton>Test</SubmitButton>
     </div>
   );
 }

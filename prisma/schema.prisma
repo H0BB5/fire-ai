@@ -103,6 +103,8 @@ model Notification {
   status   String
   sendDate DateTime?
 
+  method Json
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?

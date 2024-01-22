@@ -88,6 +88,7 @@ export async function POST(req: Request) {
           title: "Reminder Title",
           body: "Body",
           status: "Scheduled",
+          method: notificationMethod,
           tag: {
             connect: { id: tag.id },
           },

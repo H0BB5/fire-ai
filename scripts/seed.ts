@@ -66,8 +66,72 @@ async function main() {
       },
     });
 
+    const notification = await db.notification.create({
+      data: {
+        id: uuidv4(),
+        tag: {
+          connect: {
+            tagId: tag.tagId,
+          },
+        },
+        customer: {
+          connect: {
+            customerId: customerId,
+          },
+        },
+        title: "Reminder Title",
+        body: "Body",
+        status: "Scheduled",
+        sendDate: new Date(), // today
+        method: ["email", "sms"],
+      },
+    });
+
+    const notification1 = await db.notification.create({
+      data: {
+        id: uuidv4(),
+        tag: {
+          connect: {
+            tagId: tag.tagId,
+          },
+        },
+        customer: {
+          connect: {
+            customerId: customerId,
+          },
+        },
+        title: "Reminder 1",
+        body: "Time to service equipment",
+        method: ["email"],
+        sendDate: new Date(), // today
+        status: "pending",
+      },
+    });
+
+    const notification2 = await db.notification.create({
+      data: {
+        id: uuidv4(),
+        tag: {
+          connect: {
+            tagId: tag.tagId,
+          },
+        },
+        customer: {
+          connect: {
+            customerId: customerId,
+          },
+        },
+        title: "Reminder 2",
+        body: "Schedule maintenance",
+        method: ["sms"],
+        sendDate: addDays(new Date(), 10), // 10 days from now
+        status: "pending",
+      },
+    });
+
+    console.log("Seeded sample notification data");
+
     console.log("\x1b[32m%s\x1b[0m", "Success seeding data! 🌱");
-    // Seed Notification data (optional, based on your logic)
   } catch (error) {
     console.error("Error seeding data: ", error);
   } finally {
