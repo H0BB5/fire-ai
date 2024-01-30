@@ -1,8 +1,11 @@
 const { v4: uuidv4 } = require("uuid");
 const { PrismaClient } = require("@prisma/client");
-const { addDays } = require("date-fns");
+const { addDays, startOfDay } = require("date-fns");
 
 const db = new PrismaClient();
+
+const currentDate = startOfDay(new Date());
+const futureDate = addDays(new Date(), 10);
 
 async function main() {
   try {
@@ -48,7 +51,7 @@ async function main() {
         businessName: customer.businessName,
         type: "Fire Extinguisher",
         location: "Office",
-        expirationDate: addDays(new Date(), 150), // 150 days from now
+        expirationDate: currentDate, // Today
         serial: "SN123456",
         rating: "A",
         frontTagSrc: "http://placehold.co/300x300/000000/fff.jpg",
@@ -68,7 +71,7 @@ async function main() {
 
     const notification = await db.notification.create({
       data: {
-        id: uuidv4(),
+        id: customerId,
         tag: {
           connect: {
             tagId: tag.tagId,
@@ -82,7 +85,7 @@ async function main() {
         title: "Reminder Title",
         body: "Body",
         status: "Scheduled",
-        sendDate: new Date(), // today
+        sendDate: currentDate, // today
         method: ["email", "sms"],
       },
     });
@@ -103,7 +106,7 @@ async function main() {
         title: "Reminder 1",
         body: "Time to service equipment",
         method: ["email"],
-        sendDate: new Date(), // today
+        sendDate: currentDate, // today
         status: "pending",
       },
     });
@@ -124,7 +127,7 @@ async function main() {
         title: "Reminder 2",
         body: "Schedule maintenance",
         method: ["sms"],
-        sendDate: addDays(new Date(), 10), // 10 days from now
+        sendDate: futureDate, // 10 days from now
         status: "pending",
       },
     });

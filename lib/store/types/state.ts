@@ -58,9 +58,11 @@ export interface BackTagActions {
 
 export interface TagState {
   data: ExtractedData | null;
+  sendDate: Date | string;
 }
 export interface TagDataActions {
   setTagData: (data: ExtractedData) => void;
+  setSendDate: (date: Date | string) => void;
 }
 
 export interface StepStates {

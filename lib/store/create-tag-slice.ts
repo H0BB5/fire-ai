@@ -1,4 +1,7 @@
 import { StateCreator, create } from "zustand";
+import { devtools } from "zustand/middleware";
+import type {} from "@redux-devtools/extension";
+
 import {
   FrontTagState,
   FrontTagActions,
@@ -20,7 +23,7 @@ import { use } from "react";
 
 const createFrontTagSlice: StateCreator<
   FrontTagState & FrontTagActions,
-  [],
+  [["zustand/devtools", never]],
   [],
   FrontTagSlice
 > = (set) => ({
@@ -30,15 +33,23 @@ const createFrontTagSlice: StateCreator<
   uploading: false,
   textExtracted: false,
   extracting: false,
-  setFrontTagSrc: (tag: string) => set({ frontTagSrc: tag }),
-  setUploading: (uploading: boolean) => set({ uploading }),
-  setUploadingDone: (done: boolean) => set({ uploaded: done }),
-  setExtractingData: (extracting: boolean) => set({ uploading: extracting }),
+  setFrontTagSrc: (tag: string) => {
+    set({ frontTagSrc: tag }, false, "Set Front Tag Src");
+  },
+  setUploading: (uploading: boolean) => {
+    set({ uploading }, false, "Set Uploading");
+  },
+  setUploadingDone: (done: boolean) => {
+    set({ uploaded: done }, false, "Set Uploading Done");
+  },
+  setExtractingData: (extracting: boolean) => {
+    set({ uploading: extracting }, false, "Set Extracting Data");
+  },
 });
 
 const createBackTagSlice: StateCreator<
   BackTagState & BackTagActions,
-  [],
+  [["zustand/devtools", never]],
   [],
   BackTagSlice
 > = (set) => ({
@@ -46,24 +57,53 @@ const createBackTagSlice: StateCreator<
   enlarge: false,
   uploaded: false,
   uploading: false,
-  setBackTagSrc: (tag: string) => set({ backTagSrc: tag }),
-  setUploading: (uploading: boolean) => set({ uploading }),
-  setUploadingDone: (done: boolean) => set({ uploaded: done }),
+  setBackTagSrc: (tag: string) => {
+    set({ backTagSrc: tag }, false, "Set Back Tag Src");
+  },
+  setUploading: (uploading: boolean) => {
+    set({ uploading }, false, "Set Uploading");
+  },
+  setUploadingDone: (done: boolean) => {
+    set({ uploaded: done }, false, "Set Uploading Done");
+  },
 });
 
 const createTagDataSlice: StateCreator<
   TagState & TagDataActions,
-  [],
+  [["zustand/devtools", never]],
   [],
   TagDataSlice
 > = (set) => ({
   data: null,
-  setTagData: (data: ExtractedData) => set({ data }),
+  sendDate: new Date(),
+  setTagData: (data: ExtractedData) => {
+    set({ data }, false, "Tag Data Set");
+  },
+  setSendDate: (date: string | Date) => {
+    set({ sendDate: date }, false, "Notification Date Set");
+  },
 });
+
+export const useTagDataStore = create<TagState & TagDataActions>()(
+  devtools(
+    (...a) => ({
+      ...createTagDataSlice(...a),
+    }),
+    { enabled: true, name: "Create Tag Store" }
+  )
+);
+
+export const setTagData = (data: ExtractedData) => {
+  useTagDataStore.setState({ data }, false, "Set Tag Data");
+};
+
+export const setTagSendDate = (date: Date) => {
+  useTagDataStore.setState({ sendDate: date }, false, "Set Tag Send Date");
+};
 
 const createMultiSlice: StateCreator<
   StepStates & StepActions,
-  [],
+  [["zustand/devtools", never]],
   [],
   MultiSlice
 > = (set) => ({
@@ -71,35 +111,59 @@ const createMultiSlice: StateCreator<
   stepName: StepNames.FrontTag,
   totalSteps: 6,
   currentStep: 0,
-  reset: () => set({ currentStep: 1 }),
-  stepTo: (step: number) => set({ currentStep: step }),
-  increment: () => set((state) => ({ currentStep: state.currentStep + 1 })),
-  decrement: () => set((state) => ({ currentStep: state.currentStep - 1 })),
-  setStage: (stage: StageName) => set({ stage: stage }),
-  updateStep: (stepName: StepNames) => set({ stepName: stepName }),
+  reset: () => {
+    set({ currentStep: 1 }, false, "Reset Form");
+  },
+  stepTo: (step: number) => {
+    set({ currentStep: step }, false, "Step To");
+  },
+  increment: () => {
+    set(
+      (state) => ({ currentStep: state.currentStep + 1 }),
+      false,
+      "Increment Step"
+    );
+  },
+  decrement: () => {
+    set((state) => ({ currentStep: state.currentStep - 1 })),
+      false,
+      "Decrement Step";
+  },
+  setStage: (stage: StageName) => {
+    set({ stage: stage }, false, "Set Stage");
+  },
+  updateStep: (stepName: StepNames) => {
+    set({ stepName: stepName }, false, "Update Step");
+  },
 });
 
-export const useFrontTagStore = create<FrontTagSlice>()((...a) => ({
-  ...createFrontTagSlice(...a),
-}));
+export const useFrontTagStore = create<FrontTagSlice>()(
+  devtools(
+    (...a) => ({
+      ...createFrontTagSlice(...a),
+    }),
+    { enabled: true, name: "Front Tag Store" }
+  )
+);
 
 export const setExtractingFrontTag = (isExtracting: boolean) =>
   useFrontTagStore.setState({ extracting: isExtracting });
 
-export const useBackTagStore = create<BackTagSlice>()((...a) => ({
-  ...createBackTagSlice(...a),
-}));
-
-export const useTagDataStore = create<TagState & TagDataActions>()((...a) => ({
-  ...createTagDataSlice(...a),
-}));
-
-export const setTagData = (data: ExtractedData) =>
-  useTagDataStore.setState({ data });
+export const useBackTagStore = create<BackTagSlice>()(
+  devtools(
+    (...a) => ({
+      ...createBackTagSlice(...a),
+    }),
+    { enabled: true, name: "Back Tag Store" }
+  )
+);
 
 export const useMultiStepStore = create<FrontTagSlice & MultiSlice>()(
-  (...a) => ({
-    ...createFrontTagSlice(...a),
-    ...createMultiSlice(...a),
-  })
+  devtools(
+    (...a) => ({
+      ...createFrontTagSlice(...a),
+      ...createMultiSlice(...a),
+    }),
+    { enabled: true, name: "Multi Step Store" }
+  )
 );

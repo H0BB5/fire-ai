@@ -1,4 +1,8 @@
-import { useMultiStepStore } from "@/lib/store/create-tag-slice";
+import {
+  setTagSendDate,
+  useMultiStepStore,
+  useTagDataStore,
+} from "@/lib/store/create-tag-slice";
 import { Attention } from "@/components/attention";
 import { UploadThing } from "@/components/image-upload";
 import {
@@ -10,26 +14,54 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { useFormContext } from "react-hook-form";
+import { FieldValues, useFormContext, useWatch } from "react-hook-form";
 import { DatePicker } from "@/components/date-picker";
 import { Mail, MessageCircle } from "lucide-react";
+import { formatISO } from "date-fns";
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useEffect } from "react";
 
 export const NotificationStep = () => {
-  const form = useFormContext();
-  const { control, setValue, getValues, formState } = form;
+  const { control, setValue, getValues, watch } = useFormContext();
+
+  const notificationMethods = useWatch({
+    control,
+    name: "notificationMethods",
+  });
+
+  const sendDate = useWatch({
+    control,
+    name: "sendDate",
+  });
+
   const handleChange = (value: string[]) => {
-    setValue("notificationMethod", value);
+    console.log("VALUE", value);
+    setValue("notificationMethods", value);
   };
   const currentStage = useMultiStepStore((state) => state.stage);
   const dateValue = getValues("sendDate");
+
+  const setSendDate = useTagDataStore((state) => state.setSendDate);
+
+  useEffect(() => {
+    if (sendDate) {
+      const formattedDate = formatISO(sendDate);
+      setSendDate(formattedDate);
+      console.log("DATE VALUE", dateValue);
+    }
+  }, [sendDate, setSendDate, dateValue]);
+
+  useEffect(() => {
+    const formValues = watch();
+    console.log(formValues);
+  }, [watch]);
 
   return (
     <div className={cn("block", { block: currentStage === "Front Tag" })}>
       <FormField
         name="backTagSrc"
-        control={form.control}
+        control={control}
         render={({ field }) => (
           <FormItem className="flex flex-col items-center justify-center space-y-4 ">
             <FormLabel className="text-lg mt-8">
@@ -50,7 +82,7 @@ export const NotificationStep = () => {
             </FormLabel>
             <div className="mt-4 flex flex-col justify-center items-center w-full space-y-4">
               <FormField
-                name="notificationMethod"
+                name="notificationMethods"
                 control={control}
                 render={({ field }) => (
                   <FormItem className="flex align-center items-center justify-between max-w-[280px] col-span-2 md:col-span-1">
@@ -61,6 +93,7 @@ export const NotificationStep = () => {
                       <FormControl>
                         <ToggleGroup
                           type="multiple"
+                          value={notificationMethods}
                           onValueChange={handleChange}
                         >
                           <ToggleGroupItem
@@ -86,7 +119,11 @@ export const NotificationStep = () => {
               <FormMessage />
             </div>
             <div className="mx-auto">
-              <DatePicker value={dateValue} />
+              <DatePicker
+                name="sendDate"
+                value={sendDate}
+                onChange={(date) => setValue("sendDate", date)}
+              />
             </div>
           </FormItem>
         )}

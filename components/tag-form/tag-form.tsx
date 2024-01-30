@@ -31,6 +31,7 @@ export interface CompanionFormProps {
   defaultValues:
     | (Tag & {
         customer?: Partial<Customer>;
+        notification?: Partial<Notification>;
       })
     | null;
 }
@@ -63,8 +64,8 @@ export const formSchema = z.object({
     message: "Rating is required",
   }),
   backTagSrc: z.string().optional(),
-  notificationMethods: z.string().optional(),
-  sendDate: z.string().optional(),
+  notificationMethods: z.array(z.string()).optional(),
+  sendDate: z.date().optional(),
 });
 
 export const TagForm = ({ defaultValues }: CompanionFormProps) => {
@@ -98,8 +99,8 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
         technicianNotes: "",
       },
       backTagSrc: "",
-      notificationMethods: "",
-      sendDate: "",
+      notificationMethods: [],
+      sendDate: new Date(),
     },
   });
   const { setValue } = form;
@@ -132,6 +133,7 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
+
     try {
       if (defaultValues) {
         // Update Ticket

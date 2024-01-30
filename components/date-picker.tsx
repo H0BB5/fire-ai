@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "./calendar";
 import {
@@ -7,23 +7,31 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, isValid, parse } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useFormContext } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 
 interface Props {
   initialDate?: Date;
   value?: Date;
+  name: string;
+  onChange: (date: Date) => void;
 }
 
-export function DatePicker({ initialDate, value }: Props) {
+export function DatePicker({ initialDate, value, onChange, name }: Props) {
   const { setValue } = useFormContext();
+
+  const [date, setDate] = useState<Date>(
+    initialDate ? initialDate : new Date()
+  );
 
   useEffect(() => {
     if (value) {
       setDate(value);
+      console.log("DATE SET", value);
     }
   }, [value]);
 
@@ -32,18 +40,18 @@ export function DatePicker({ initialDate, value }: Props) {
     const newStringDate = format(date, "PPP");
     setStringDate(newStringDate);
     setValue("sendDate", newStringDate);
+    if (onChange) {
+      onChange(date);
+    }
   };
-
-  const [date, setDate] = useState<Date>(
-    initialDate ? initialDate : new Date()
-  );
-
   if (!date) {
     let date = new Date();
     setDate(date);
   }
   const [stringDate, setStringDate] = useState(
-    initialDate ? format(initialDate, "PPP") : format(new Date(), "PPP")
+    initialDate && isValid(initialDate)
+      ? format(initialDate, "PPP")
+      : format(new Date(), "PPP")
   );
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -51,23 +59,22 @@ export function DatePicker({ initialDate, value }: Props) {
     <Popover>
       <div className="relative w-[280px]">
         <Input
+          name={name}
           type="string"
           value={stringDate}
           onFocus={() => {
             if (date) setStringDate(format(date, "MM/dd/yyyy"));
           }}
           onChange={(e) => {
-            if (date) setStringDate("");
             setStringDate(e.target.value);
           }}
           onBlur={(e) => {
-            let parsedDate = new Date(e.target.value);
-            if (parsedDate.toString() === "Invalid Date") {
-              setErrorMessage("Invalid Date");
-            } else {
+            const parsedDate = parse(e.target.value, "MM/dd/yyyy", new Date());
+            if (isValid(parsedDate)) {
+              handleDate(parsedDate);
               setErrorMessage("");
-              setDate(parsedDate);
-              setStringDate(format(parsedDate, "PPP"));
+            } else {
+              setErrorMessage("Invalid Date");
             }
           }}
         />
@@ -97,7 +104,6 @@ export function DatePicker({ initialDate, value }: Props) {
           onSelect={(selectedDate) => {
             if (!selectedDate) return;
             handleDate(selectedDate);
-
             setErrorMessage("");
           }}
           fromYear={1960}

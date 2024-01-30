@@ -1,6 +1,7 @@
 import { currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
+import { addDays, parseISO, startOfDay } from "date-fns";
 
 import prismadb from "@/lib/prismadb";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -18,10 +19,13 @@ export async function POST(req: Request) {
       location,
       serial,
       rating,
-      notificationMethod = "email",
+      notificationMethods,
       sendDate,
-      // expiration
     } = body;
+
+    const convertDate = parseISO(sendDate);
+    const notificationDate = startOfDay(convertDate);
+
     const { address, technicianNotes } = customer;
     console.log("[TAG_POST]", body);
     // check if technician is logged in
@@ -78,27 +82,22 @@ export async function POST(req: Request) {
       },
     });
 
-    if (sendDate) {
-      const dateWithoutSuffix = sendDate.replace(/(st|nd|rd|th)/, "");
-      const date = new Date(dateWithoutSuffix);
-      const isoDate = date.toISOString();
-      await prismadb.notification.create({
-        data: {
-          id: notificationId,
-          title: "Reminder Title",
-          body: "Body",
-          status: "Scheduled",
-          method: notificationMethod,
-          tag: {
-            connect: { id: tag.id },
-          },
-          customer: {
-            connect: { id: tag.customerId },
-          },
-          sendDate: isoDate,
+    await prismadb.notification.create({
+      data: {
+        id: notificationId,
+        title: "Upcoming Tag Expiration for " + businessName,
+        body: "Body",
+        status: "Scheduled",
+        method: notificationMethods,
+        tag: {
+          connect: { id: tag.id },
         },
-      });
-    }
+        customer: {
+          connect: { id: tag.customerId },
+        },
+        sendDate: notificationDate,
+      },
+    });
 
     return NextResponse.json(tag);
   } catch (error) {

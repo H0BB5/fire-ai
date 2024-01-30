@@ -6,6 +6,14 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+
+import {
+  useMultiStepStore,
+  useBackTagStore,
+  useFrontTagStore,
+  useTagDataStore,
+} from "@/lib/store/create-tag-slice";
+
 const inter = Inter({ subsets: ["latin"], preload: true });
 
 export const metadata: Metadata = {
