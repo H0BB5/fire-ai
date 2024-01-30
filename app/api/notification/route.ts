@@ -9,6 +9,10 @@ const prisma = new PrismaClient();
 const currentDate = new Date();
 currentDate.setHours(0, 0, 0, 0);
 
+// sendDate should be 90 days before expiry date
+// sendDate should be 30 days before expiry date
+// sendDate should be 7 days before expiry date
+
 export async function GET() {
   const notifications = await prisma.notification.findMany({
     where: {
@@ -26,15 +30,12 @@ export async function GET() {
     const tag = await prisma.tag.findUnique({
       where: { id: notification.tagId },
     });
-    const customer = await prisma.customer.findUnique({
-      where: { customerId: tag?.customerId },
-    });
     let tagNumber = uuidv4();
     const msg = {
       from: "onboarding@resend.dev",
       to: `dylanjhobbs@gmail.com`,
-      subject: `Tag is expiring for ${customer?.businessName} - ${tagNumber}`,
-      html: `Your tag is expiring for ${customer?.businessName}\n\nPlease login to your account and contact the customer\n\nhttp://localhost:3000/tag/${tag?.id}`,
+      subject: `[${tag?.businessName}] - Tag Expiring`,
+      html: `Tag is expiring for ${tag?.businessName}\n\nPlease login to your account and contact the customer\n\nhttp://localhost:3000/tag/${tag?.id}`,
     };
 
     resend.emails.send(msg);

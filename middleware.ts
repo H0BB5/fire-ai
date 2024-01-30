@@ -7,9 +7,9 @@ export default authMiddleware({
   publicRoutes: [
     "/api/uploadthing",
     "/api/ai/",
-    "/api/notifications",
+    "/api/notification",
     "/_vercel/speed-insights/vitals",
-    "/api/notifications/email",
+    "/api/notification/email",
   ],
 });
 
