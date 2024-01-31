@@ -7,13 +7,16 @@ export default authMiddleware({
   publicRoutes: [
     "/api/uploadthing",
     "/api/ai/",
-    "/api/notification",
     "/_vercel/speed-insights/vitals",
-    "/api/notification/cron",
-    "/api/notification/email",
+    "/api/notification",
+    "/api/sendEmail",
   ],
 });
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    "/((?!.+\\.[\\w]+$|_next).*)",
+    "/",
+    "/(api|trpc)(?!/(notification|sendEmail))(.*)",
+  ],
 };
