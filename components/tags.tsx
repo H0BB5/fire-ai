@@ -16,15 +16,11 @@ export const Tags = ({ data }: TagProps) => {
   const tagId = searchparams.get("tagId");
 
   const onClick = (id: string | undefined) => {
-    const query = { tagId: id };
-    const url = qs.stringifyUrl(
-      {
-        url: window.location.href,
-        query,
-      },
-      { skipNull: true }
-    );
-    router.push(url);
+    if (id) {
+      const url =
+        window.location.origin + window.location.pathname + "/tag/" + id;
+      router.push(url);
+    }
   };
 
   return (
