@@ -17,6 +17,7 @@ export const config = {
   matcher: [
     "/((?!.+\\.[\\w]+$|_next).*)",
     "/",
-    "/(api|trpc)(?!/(notification|sendEmail))(.*)",
+    "/api(?!/(notification|sendEmail))(.*)",
+    "/trpc(.*)",
   ],
 };
