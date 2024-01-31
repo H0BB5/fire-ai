@@ -4,5 +4,8 @@
       "path": "/api/notification",
       "schedule": "0 6 * * *"
     }
-  ]
+  ],
+  "timeouts": {
+    "functions": 10
+  }
 }
