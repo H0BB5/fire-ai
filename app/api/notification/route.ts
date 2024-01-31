@@ -4,9 +4,7 @@ import { Resend } from "resend";
 import { v4 as uuidv4 } from "uuid";
 // pages/api/notification/route.ts
 
-export const config = {
-  runtime: "edge",
-};
+export const runtime = "edge";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
