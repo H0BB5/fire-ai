@@ -25,6 +25,10 @@ export async function POST(req: Request) {
 
     const convertDate = parseISO(sendDate);
     const notificationDate = startOfDay(convertDate);
+    const methods =
+      typeof notificationMethods === "string"
+        ? [notificationMethods]
+        : notificationMethods;
 
     const { address, technicianNotes } = customer;
     console.log("[TAG_POST]", body);
