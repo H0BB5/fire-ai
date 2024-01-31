@@ -1,8 +1,13 @@
 import { PrismaClient } from "@prisma/client";
-import { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { v4 as uuidv4 } from "uuid";
+// pages/api/notification/route.ts
+
+export const config = {
+  runtime: "edge",
+};
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const prisma = new PrismaClient();
@@ -30,7 +35,6 @@ export async function GET() {
     const tag = await prisma.tag.findUnique({
       where: { id: notification.tagId },
     });
-    let tagNumber = uuidv4();
     const msg = {
       from: "onboarding@resend.dev",
       to: `dylanjhobbs@gmail.com`,
@@ -47,13 +51,13 @@ export async function GET() {
     });
   }
 
-  const smsNotifications = notifications.filter((n) => {
-    return String(n.method).includes("sms");
-  });
-
   console.log(emailNotifications);
 
-  return new NextResponse("[API_NOTIFICATIONS] Notifications sent!", {
-    status: 200,
-  });
+  return new NextResponse(
+    "[API_NOTIFICATIONS] Notifications sent!" +
+      JSON.stringify(emailNotifications),
+    {
+      status: 200,
+    }
+  );
 }
