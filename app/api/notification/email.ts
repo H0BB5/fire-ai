@@ -22,6 +22,7 @@ export default async function sendEmail() {
     return String(n.method).includes("email");
   });
 
+  let sentNotifications = [];
   for (const notification of emailNotifications) {
     const tag = await prisma.tag.findUnique({
       where: { id: notification.tagId },
@@ -41,8 +42,8 @@ export default async function sendEmail() {
       data: { status: "Sent" },
     });
 
-    return emailNotifications;
-  }
+    sentNotifications.push(notification);
 
-  console.log(emailNotifications);
+    return sentNotifications;
+  }
 }
