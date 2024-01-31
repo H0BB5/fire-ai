@@ -8,8 +8,8 @@ export default authMiddleware({
     "/api/uploadthing",
     "/api/ai/",
     "/api/notification",
-    "/api/notification/route",
     "/_vercel/speed-insights/vitals",
+    "/api/notification/cron",
     "/api/notification/email",
   ],
 });
