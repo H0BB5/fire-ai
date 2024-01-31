@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import sendEmail from "./email";
+import sendEmail from "../sendEmail";
 
-export default async function handler() {
+export default async function GET() {
   try {
     const sentNotifications = await sendEmail();
 
