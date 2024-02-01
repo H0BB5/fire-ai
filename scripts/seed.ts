@@ -1,16 +1,15 @@
 const { v4: uuidv4 } = require("uuid");
 const { PrismaClient } = require("@prisma/client");
-const { addDays, startOfDay } = require("date-fns");
+const { addDays } = require("date-fns");
 
 const db = new PrismaClient();
 
 const now = new Date();
-const utcDate = new Date(
+const currentDate = new Date(
   Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
 );
-const currentDate = startOfDay(utcDate);
 
-console.log("TIMEZONE/CURRENT DAY SET", currentDate.toISOString());
+console.log("TIMEZONE/CURRENT DAY SET", currentDate);
 
 const futureDate = addDays(new Date(), 10);
 

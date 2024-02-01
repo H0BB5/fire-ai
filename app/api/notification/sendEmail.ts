@@ -1,24 +1,26 @@
 import { PrismaClient } from "@prisma/client";
 import { Resend } from "resend";
-import { startOfDay, formatISO } from "date-fns";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const prisma = new PrismaClient();
 
 const now = new Date();
-const utcDate = new Date(
+const currentDate = new Date(
   Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
 );
-const currentDate = startOfDay(utcDate);
+const nextDay = new Date(
+  Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1)
+);
 
-console.log("TIMEZONE/CURRENT DAY SET", formatISO(currentDate));
+console.log("TIMEZONE/CURRENT DAY SET", currentDate.toISOString());
 
 export default async function sendEmail() {
   const notifications = await prisma.notification.findMany({
     where: {
       sendDate: {
-        equals: currentDate,
+        gte: currentDate,
+        lt: nextDay,
       },
     },
   });

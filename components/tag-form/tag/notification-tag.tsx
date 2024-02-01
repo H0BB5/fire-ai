@@ -55,8 +55,7 @@ export const NotificationStep = () => {
           )
         )
       );
-      const formattedDate = formatISO(utcMidnightDate);
-      setSendDate(formattedDate);
+      setSendDate(utcMidnightDate);
       console.log("DATE VALUE", dateValue);
     }
   }, [sendDate, setSendDate, dateValue]);
