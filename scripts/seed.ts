@@ -4,7 +4,14 @@ const { addDays, startOfDay } = require("date-fns");
 
 const db = new PrismaClient();
 
-const currentDate = startOfDay(new Date());
+const now = new Date();
+const utcDate = new Date(
+  Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+);
+const currentDate = startOfDay(utcDate);
+
+console.log("TIMEZONE/CURRENT DAY SET", currentDate.toISOString());
+
 const futureDate = addDays(new Date(), 10);
 
 async function main() {

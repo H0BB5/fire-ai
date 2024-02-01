@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import sendEmail from "../sendEmail";
+import sendEmail from "./sendEmail";
 
 export async function GET(request: NextRequest) {
   try {

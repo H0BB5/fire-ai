@@ -1,13 +1,18 @@
 import { PrismaClient } from "@prisma/client";
-import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import { v4 as uuidv4 } from "uuid";
+import { startOfDay } from "date-fns";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const prisma = new PrismaClient();
-const currentDate = new Date();
-currentDate.setHours(0, 0, 0, 0);
+
+const now = new Date();
+const utcDate = new Date(
+  Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+);
+const currentDate = startOfDay(utcDate);
+
+console.log("TIMEZONE/CURRENT DAY SET", currentDate.toISOString());
 
 export default async function sendEmail() {
   const notifications = await prisma.notification.findMany({
