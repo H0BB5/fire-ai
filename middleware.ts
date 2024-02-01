@@ -10,7 +10,7 @@ export default authMiddleware({
     "/api/ai/",
     "/_vercel/speed-insights/vitals",
   ],
-  ignoredRoutes: ["/api/sendEmail", "/api/notification"],
+  ignoredRoutes: ["/api/notification"],
 });
 
 export const config = {
