@@ -16,9 +16,6 @@ export default authMiddleware({
 });
 
 export const config = {
-  matcher: [
-    "/((?!.+\\.[\\w]+$|_next).*)",
-    "/",
-    "/(api|trpc)(?!/sendEmail|/notification)(.*)",
-  ],
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  ignoredRoutes: ["/api/sendEmail", "/api/notification"],
 };
