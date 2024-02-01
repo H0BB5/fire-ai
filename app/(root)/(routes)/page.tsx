@@ -4,7 +4,7 @@ import prismadb from "@/lib/prismadb";
 import { TagCards } from "@/components/tag-cards";
 import { Tags as TagsIcon } from "lucide-react";
 
-export const revalidate = 30; // is this the right value?
+export const dynamic = "force-dynamic";
 
 /**
  * This is the dashboard page.

@@ -9,7 +9,6 @@ export default authMiddleware({
     "/api/uploadthing",
     "/api/ai/",
     "/_vercel/speed-insights/vitals",
-    "/api/notification",
   ],
   ignoredRoutes: ["/api/sendEmail", "/api/notification"],
 });
