@@ -43,7 +43,6 @@ export default async function sendEmail() {
     });
 
     sentNotifications.push(notification);
-
-    return sentNotifications;
   }
+  return sentNotifications;
 }
