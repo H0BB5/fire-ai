@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import { FieldValues, useFormContext, useWatch } from "react-hook-form";
 import { DatePicker } from "@/components/date-picker";
 import { Mail, MessageCircle } from "lucide-react";
-import { formatISO } from "date-fns";
+import { formatISO, startOfDay } from "date-fns";
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useEffect } from "react";
@@ -46,7 +46,16 @@ export const NotificationStep = () => {
 
   useEffect(() => {
     if (sendDate) {
-      const formattedDate = formatISO(sendDate);
+      const utcMidnightDate = startOfDay(
+        new Date(
+          Date.UTC(
+            sendDate.getFullYear(),
+            sendDate.getMonth(),
+            sendDate.getDate()
+          )
+        )
+      );
+      const formattedDate = formatISO(utcMidnightDate);
       setSendDate(formattedDate);
       console.log("DATE VALUE", dateValue);
     }
