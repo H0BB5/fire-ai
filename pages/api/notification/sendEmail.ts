@@ -32,8 +32,12 @@ export default async function sendEmail() {
   const emailData = notifications.map((notification) => ({
     to: "dylanjhobbs@gmail.com", // Consider making this dynamic based on the notification or related customer
     from: "onboarding@resend.dev",
-    subject: `[${notification.tag.businessName}] - Tag Expiring`,
-    html: `Tag expiring for ${notification.tag.businessName}...`,
+    subject: `[${notification.tag.businessName}] - Upcoming Expiration`,
+    html: `Expiration notice for ${notification.tag.businessName}\n\n
+      Date of Expiration: ${notification.tag.expirationDate}\n
+      Equipment Type: ${notification.tag.type}\n\n
+      <a href="tags.alexandersafety.com/tag/${notification.tag.tagId}>View Tag</a>\n\n\n
+      Please contact ${notification.tag.businessName} to schedule an inspection.`,
     notificationId: notification.id, // Include the notification ID for later update
   }));
 
@@ -59,7 +63,6 @@ export default async function sendEmail() {
             ":",
           error
         );
-        // Additional error handling logic here
       }
     })
   );
