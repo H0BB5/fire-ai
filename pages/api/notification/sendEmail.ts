@@ -33,11 +33,11 @@ export default async function sendEmail() {
     to: "dylanjhobbs@gmail.com", // Consider making this dynamic based on the notification or related customer
     from: "onboarding@resend.dev",
     subject: `[${notification.tag.businessName}] - Upcoming Expiration`,
-    html: `Expiration notice for ${notification.tag.businessName}\n\n
-      Date of Expiration: ${notification.tag.expirationDate}\n
-      Equipment Type: ${notification.tag.type}\n\n
-      <a href="tags.alexandersafety.com/tag/${notification.tag.tagId}>View Tag</a>\n\n\n
-      Please contact ${notification.tag.businessName} to schedule an inspection.`,
+    html: `<h1>Expiration notice for ${notification.tag.businessName}<h1>\n\n
+      <p>Date of Expiration: ${notification.tag.expirationDate}<p>\n\n
+      <p>Equipment Type: ${notification.tag.type}</p>\n\n
+      <p><a href="https://tags.alexandersafety.ca/tag/${notification.tag.id}>View Tag</a></p>\n\n\n
+      <p>Please contact ${notification.tag.businessName} to schedule an inspection.</p>`,
     notificationId: notification.id, // Include the notification ID for later update
   }));
 

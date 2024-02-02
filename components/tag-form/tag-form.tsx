@@ -142,6 +142,8 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
         // Create Schedule
         await axios.post("/api/tags", values);
       }
+      // clear form state
+      form.reset();
       toast({
         description: "Success.",
       });
