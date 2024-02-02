@@ -32,12 +32,12 @@ export default async function sendEmail() {
   const emailData = notifications.map((notification) => ({
     to: "dylanjhobbs@gmail.com", // Consider making this dynamic based on the notification or related customer
     from: "onboarding@resend.dev",
-    subject: `[${notification.tag.businessName}] - Upcoming Expiration`,
-    html: `<h1>Expiration notice for ${notification.tag.businessName}<h1><br><br>
-      <div><p>Date of Expiration: ${notification.tag.expirationDate}<p></div><br><br>
-      <div><p>Equipment Type: ${notification.tag.type}</p></div><br><br>
-      <div><p><a href="https://tags.alexandersafety.ca/tag/${notification.tag.id}>View Tag</a></p></div><br><br>
-      <div><p>Please contact ${notification.tag.businessName} to schedule an inspection.</p></div>`,
+    subject: `[${notification.tag.businessName}] - Upcoming Expiration #${notification.id}`,
+    html: `<h1>Expiration notice for ${notification.tag.businessName}</h1>
+      <p>Date of Expiration: ${notification.tag.expirationDate}<p>
+      <p>Equipment Type: ${notification.tag.type}</p>
+      <p><a href="https://tags.alexandersafety.ca/tag/${notification.tag.id}">View Tag</a></p>
+      <p>Please contact ${notification.tag.businessName} to schedule an inspection.</p>`,
     notificationId: notification.id, // Include the notification ID for later update
   }));
 
