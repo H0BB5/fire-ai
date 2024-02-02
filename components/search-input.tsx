@@ -11,8 +11,8 @@ export const SearchInput = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const categoryId = searchParams.get("categoryId");
-  const name = searchParams.get("name");
+  const categoryId = searchParams?.get("categoryId");
+  const name = searchParams?.get("name");
 
   const [value, setValue] = useState(name || "");
 
