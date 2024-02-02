@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-
 const prisma = new PrismaClient();
 
 const now = new Date();
@@ -16,6 +15,7 @@ const nextDay = new Date(
 console.log("TIMEZONE/CURRENT DAY SET", currentDate.toISOString());
 
 export default async function sendEmail() {
+  // Get notifications for the day with tag included
   const notifications = await prisma.notification.findMany({
     where: {
       sendDate: {
@@ -23,33 +23,46 @@ export default async function sendEmail() {
         lt: nextDay,
       },
     },
+    include: {
+      tag: true,
+    },
   });
 
-  const emailNotifications = notifications.filter((n) => {
-    return String(n.method).includes("email");
-  });
+  // Construct email data with notificationId included
+  const emailData = notifications.map((notification) => ({
+    to: "dylanjhobbs@gmail.com", // Consider making this dynamic based on the notification or related customer
+    from: "onboarding@resend.dev",
+    subject: `[${notification.tag.businessName}] - Tag Expiring`,
+    html: `Tag expiring for ${notification.tag.businessName}...`,
+    notificationId: notification.id, // Include the notification ID for later update
+  }));
 
-  let sentNotifications = [];
-  for (const notification of emailNotifications) {
-    const tag = await prisma.tag.findUnique({
-      where: { id: notification.tagId },
-    });
-    const msg = {
-      from: "onboarding@resend.dev",
-      to: `dylanjhobbs@gmail.com`,
-      subject: `[${tag?.businessName}] - Tag Expiring`,
-      html: `Tag is expiring for ${tag?.businessName}\n\nPlease login to your account and contact the customer\n\nhttp://localhost:3000/tag/${tag?.id}`,
-    };
+  await Promise.all(
+    emailData.map(async (email) => {
+      try {
+        await resend.emails.send({
+          to: email.to,
+          from: email.from,
+          subject: email.subject,
+          html: email.html,
+        });
 
-    resend.emails.send(msg);
+        // Update notification status to "Sent"
+        await prisma.notification.update({
+          where: { id: email.notificationId },
+          data: { status: "Sent" },
+        });
+      } catch (error) {
+        console.error(
+          "Error sending email for notification ID " +
+            email.notificationId +
+            ":",
+          error
+        );
+        // Additional error handling logic here
+      }
+    })
+  );
 
-    // Update notification as sent
-    await prisma.notification.update({
-      where: { id: notification.id },
-      data: { status: "Sent" },
-    });
-
-    sentNotifications.push(notification);
-  }
-  return sentNotifications;
+  return notifications.length; // Return the count of processed notifications
 }
