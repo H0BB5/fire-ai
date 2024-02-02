@@ -13,7 +13,7 @@ export const Tags = ({ data }: TagProps) => {
   const router = useRouter();
   const searchparams = useSearchParams();
 
-  const tagId = searchparams.get("tagId");
+  const tagId = searchparams?.get("tagId");
 
   const onClick = (id: string | undefined) => {
     if (id) {
