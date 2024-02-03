@@ -19,6 +19,7 @@ import { ArrowLeft, ArrowRight, Wand2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { FrontTagStep } from "./tag/front-tag";
 import {
+  useFormReset,
   useFrontTagStore,
   useMultiStepStore,
   useTagDataStore,
@@ -76,8 +77,6 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
   const technicianNotesValue = technicianNotes === null ? "" : technicianNotes;
   const extractingText = useFrontTagStore((state) => state.extracting);
 
-  const resetForm = useMultiStepStore((state) => state.reset);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -115,6 +114,7 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
     }
   }, [setValue, aiTagData, incrementStep]);
 
+  const resetForm = useFormReset();
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
 

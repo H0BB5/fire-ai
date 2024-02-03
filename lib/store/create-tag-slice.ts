@@ -82,6 +82,9 @@ const createTagDataSlice: StateCreator<
   setSendDate: (date: string | Date) => {
     set({ sendDate: date }, false, "Notification Date Set");
   },
+  reset: () => {
+    set({ data: null, sendDate: new Date() }, false, "Reset Tag Data");
+  },
 });
 
 export const useTagDataStore = create<TagState & TagDataActions>()(
@@ -112,7 +115,16 @@ const createMultiSlice: StateCreator<
   totalSteps: 6,
   currentStep: 0,
   reset: () => {
-    set({ currentStep: 1 }, false, "Reset Form");
+    set(
+      {
+        stage: StageName.FrontTag,
+        stepName: StepNames.FrontTag,
+        currentStep: 0,
+        totalSteps: 6,
+      },
+      false,
+      "Reset Form"
+    );
   },
   stepTo: (step: number) => {
     set({ currentStep: step }, false, "Step To");
@@ -167,3 +179,13 @@ export const useMultiStepStore = create<FrontTagSlice & MultiSlice>()(
     { enabled: true, name: "Multi Step Store" }
   )
 );
+
+export const useFormReset = () => {
+  const { reset: resetSteps } = useMultiStepStore.getState();
+  const { reset: resetTagData } = useTagDataStore.getState();
+
+  return () => {
+    resetSteps();
+    resetTagData();
+  };
+};

@@ -54,48 +54,49 @@ export async function POST(req: Request) {
     }
 
     const tagId = uuidv4();
-    const notificationId = uuidv4();
     // Create the tag with either a new customer or connect to an existing one
-    const tag = await prismadb.tag.create({
-      data: {
-        tagId,
-        technician: {
-          connect: { id: technicianRecord.id },
-        },
-        customer: {
-          create: {
-            customerId: businessName,
-            businessName: businessName,
-            address,
-            technicianNotes: technicianNotes,
-            technician: {
-              connect: { id: technicianRecord.id },
+    const tag = await prismadb.tag
+      .create({
+        data: {
+          tagId,
+          technician: {
+            connect: { id: technicianRecord.id },
+          },
+          customer: {
+            create: {
+              customerId: businessName,
+              businessName: businessName,
+              address,
+              technicianNotes: technicianNotes,
+              technician: {
+                connect: { id: technicianRecord.id },
+              },
             },
           },
+          notification: {
+            create: {
+              customerId: businessName,
+              title: "Upcoming Tag Expiration for " + businessName,
+              body: "Body",
+              status: "Scheduled",
+              method: notificationMethods,
+              sendDate: notificationDate,
+            },
+          },
+          businessName,
+          type,
+          frontTagSrc,
+          backTagSrc,
         },
-        businessName,
-        type,
-        frontTagSrc,
-        backTagSrc,
-      },
-    });
-
-    await prismadb.notification.create({
-      data: {
-        id: notificationId,
-        title: "Upcoming Tag Expiration for " + businessName,
-        body: "Body",
-        status: "Scheduled",
-        method: notificationMethods,
-        tag: {
-          connect: { id: tag.id },
-        },
-        customer: {
-          connect: { id: tag.customerId },
-        },
-        sendDate: notificationDate,
-      },
-    });
+      })
+      .catch((error) => {
+        if (error.code === "P2002") {
+          return NextResponse.json({
+            status: 400,
+            error: "Tag already exists",
+          });
+        }
+      });
 
     return NextResponse.json(tag);
   } catch (error) {

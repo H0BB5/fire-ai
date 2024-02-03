@@ -60,6 +60,7 @@ export interface TagState {
 export interface TagDataActions {
   setTagData: (data: ExtractedData) => void;
   setSendDate: (date: Date | string) => void;
+  reset: () => void;
 }
 
 export interface StepStates {
