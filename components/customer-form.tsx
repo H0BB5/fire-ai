@@ -22,9 +22,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Building2, Wand2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { UploadThing } from "@/components/image-upload";
-
-import { useAIStore } from "@/app/store/fire-ai";
 
 const formSchema = z.object({
   businessName: z.string().min(1, {
@@ -42,24 +39,6 @@ interface CustomerFormProps {
   initialData: Partial<Customer> | null;
   tags: Tag[];
 }
-
-enum EQUIPMENT {
-  Extinguisher = "Fire Extinguisher",
-  Hose = "Fire Hose",
-  System = "Fire System",
-}
-
-const equipmentTypes = [
-  {
-    type: EQUIPMENT.Extinguisher,
-  },
-  {
-    type: EQUIPMENT.Hose,
-  },
-  {
-    type: EQUIPMENT.System,
-  },
-];
 
 export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
   const router = useRouter();

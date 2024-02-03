@@ -45,6 +45,10 @@ export const NotificationStep = () => {
   const setSendDate = useTagDataStore((state) => state.setSendDate);
 
   useEffect(() => {
+    setValue("notificationMethods", ["email"]);
+  }, [setValue]);
+
+  useEffect(() => {
     if (sendDate) {
       const utcMidnightDate = startOfDay(
         new Date(
@@ -109,12 +113,6 @@ export const NotificationStep = () => {
                             aria-label="Toggle email"
                           >
                             <Mail className="h-4 w-4" />
-                          </ToggleGroupItem>
-                          <ToggleGroupItem
-                            value="sms"
-                            aria-label="Toggle text message"
-                          >
-                            <MessageCircle className="h-4 w-4" />
                           </ToggleGroupItem>
                         </ToggleGroup>
                       </FormControl>

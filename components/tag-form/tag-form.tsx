@@ -76,6 +76,8 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
   const technicianNotesValue = technicianNotes === null ? "" : technicianNotes;
   const extractingText = useFrontTagStore((state) => state.extracting);
 
+  const resetForm = useMultiStepStore((state) => state.reset);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -136,7 +138,19 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
         description: "Something went wrong.",
       });
     }
-
+    form.reset({
+      frontTagSrc: "",
+      businessName: "",
+      type: "",
+      customer: {
+        address: "",
+        technicianNotes: "",
+      },
+      backTagSrc: "",
+      notificationMethods: [],
+      sendDate: new Date(), // Or any other initial value you deem appropriate
+    });
+    resetForm();
     router.refresh();
     router.push("/");
   };

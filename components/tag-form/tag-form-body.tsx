@@ -6,7 +6,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   FormField,
   FormItem,
@@ -15,39 +15,25 @@ import {
   FormDescription,
   FormMessage,
 } from "../ui/form";
+import { EQUIPMENT, equipmentTypes } from "@/app/store/fire-ai";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { useForm, useFormContext } from "react-hook-form";
-
-type TagExtraction = {
-  nameOfTagIssuer: string;
-  businessName: string;
-  address: string;
-  type: EQUIPMENT;
-  lastTestDate: Date | undefined;
-};
-
-enum EQUIPMENT {
-  Extinguisher = "Fire Extinguisher",
-  Hose = "Fire Hose",
-  System = "System",
-}
-
-const equipmentTypes = [
-  {
-    type: "Fire Extinguisher",
-  },
-  {
-    type: "Fire Hose",
-  },
-  {
-    type: "System",
-  },
-];
+import { useFormContext } from "react-hook-form";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Label } from "../ui/label";
 
 export const TagFormBody = () => {
-  const { control, formState } = useFormContext();
+  const { control, formState, getValues, setValue } = useFormContext();
   const isLoading = formState.isSubmitting;
+
+  useEffect(() => {
+    const defaultValue = getValues("type");
+
+    if (defaultValue) {
+      setValue("type", defaultValue);
+    }
+  }, [control, getValues, setValue]);
+
   return (
     <div className="space-y-8 pb-10">
       <div className="space-y-2 w-full">
@@ -107,36 +93,27 @@ export const TagFormBody = () => {
           render={({ field }) => (
             <FormItem className="col-span-2 md:col-span-1">
               <FormLabel>Equipment Type</FormLabel>
-              <Select
-                name="type"
-                disabled={isLoading}
-                onValueChange={field.onChange}
+              <RadioGroup
                 value={field.value}
-                defaultValue={field.value}
+                onValueChange={(value) => {
+                  setValue("type", value);
+                }}
               >
-                <FormControl ref={field.ref}>
-                  <SelectTrigger className="bg-background">
-                    <SelectValue
-                      defaultValue={field.value}
-                      placeholder="Select type"
+                {equipmentTypes.map((equipment, i) => (
+                  <div
+                    key={equipment.type}
+                    className="flex items-center space-x-2"
+                  >
+                    <RadioGroupItem
+                      value={"type"}
+                      id={`r${i}`}
+                      checked={field.value === equipment.type}
+                      className="hover:bg-primary/10 transition-colors ease-in-out transition-duration-200"
                     />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {equipmentTypes.map((equipment) => (
-                    <SelectItem
-                      key={equipment.type}
-                      value={equipment.type}
-                      className="hover:bg-primary/10"
-                    >
-                      {equipment.type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {/* <FormDescription>
-                    Select the type of equipment the tag is for
-                  </FormDescription> */}
+                    <Label htmlFor={`r${i}`}>{equipment.type}</Label>
+                  </div>
+                ))}
+              </RadioGroup>
             </FormItem>
           )}
         />

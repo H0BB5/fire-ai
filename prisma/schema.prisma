@@ -26,7 +26,7 @@ model Technician {
 model Customer {
   id              String     @id @default(uuid())
   customerId      String     @unique
-  businessName    String     @unique @db.VarChar(255)
+  businessName    String     @db.VarChar(255)
   address         String
   city            String?
   // Tags associated with this customer
