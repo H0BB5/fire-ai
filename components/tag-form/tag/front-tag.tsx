@@ -21,7 +21,7 @@ export const FrontTagStep = () => {
         control={form.control}
         render={({ field }) => (
           <FormItem className="flex flex-col items-center justify-center space-y-4 ">
-            <FormLabel className="text-lg mt-4 md:mt-6">
+            <FormLabel className="text-lg mt-4 md:mt-6 w-full">
               <Attention
                 labels={["Front Tag"]}
                 color="blue"

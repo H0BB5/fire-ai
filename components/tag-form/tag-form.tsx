@@ -2,10 +2,10 @@
 
 import axios from "axios";
 import * as z from "zod";
-import { Customer, Tag } from "@prisma/client";
+import { Customer, Tag, Notification } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { addDays } from "date-fns";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { Form } from "@/components/ui/form";
@@ -15,7 +15,7 @@ import { TagFormSkeleton } from "./tag-form-skeleton";
 import { TagFormBody } from "./tag-form-body";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { ArrowLeft, ArrowRight, Wand2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Mail, Wand2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { FrontTagStep } from "./tag/front-tag";
 import {
@@ -24,9 +24,10 @@ import {
   useMultiStepStore,
   useTagDataStore,
 } from "@/lib/store/create-tag-slice";
-import { StepStates } from "@/lib/store/types/state";
+import { StageName, StepStates } from "@/lib/store/types/state";
 import { BackTagStep } from "./tag/back-tag";
 import { NotificationStep } from "./tag/notification-tag";
+import { FormButton } from "./form-button/index";
 
 export interface CompanionFormProps {
   defaultValues:
@@ -57,7 +58,9 @@ export const formSchema = z.object({
   }),
   backTagSrc: z.string().optional(),
   notificationMethods: z.array(z.string()).optional(),
-  sendDate: z.date().optional(),
+  sendDate: z.date({
+    required_error: "Make sure the expiration date is correct",
+  }),
 });
 
 export const TagForm = ({ defaultValues }: CompanionFormProps) => {
@@ -80,16 +83,16 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      frontTagSrc: "",
-      businessName: "",
-      type: "",
+      frontTagSrc: defaultValues?.frontTagSrc || "",
+      businessName: defaultValues?.businessName || "",
+      type: defaultValues?.type || "",
       customer: {
-        address: "",
-        technicianNotes: "",
+        address: defaultValues?.customer?.address || "",
+        technicianNotes: defaultValues?.customer?.technicianNotes || "",
       },
-      backTagSrc: "",
+      backTagSrc: defaultValues?.backTagSrc || "",
       notificationMethods: [],
-      sendDate: new Date(),
+      sendDate: defaultValues?.notification?.sendDate || undefined,
     },
   });
   const { setValue } = form;
@@ -100,6 +103,7 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
       setValue("businessName", defaultValues.businessName);
       setValue("type", defaultValues.type);
       setValue("customer.address", addressValue);
+      setValue("sendDate", defaultValues?.expirationDate || new Date());
       setValue("customer.technicianNotes", technicianNotesValue);
     }
   }, [defaultValues, addressValue, technicianNotesValue, setValue]);
@@ -148,13 +152,12 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
       },
       backTagSrc: "",
       notificationMethods: [],
-      sendDate: new Date(), // Or any other initial value you deem appropriate
+      sendDate: new Date(),
     });
     resetForm();
     router.refresh();
     router.push("/");
   };
-  console.log("isTextextracting", extractingText);
 
   return (
     <div className="h-full p-4 space-y-2 max-w-3xl mx-auto">
@@ -201,66 +204,28 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
               <NotificationStep />
             </div>
             {/* // Submit Step */}
-            <div className="w-full flex justify-center">
-              {/* Back Button */}
-              <Button
-                type="button"
-                size="lg"
-                variant="ghost"
-                className={cn({ hidden: currentStage === "Front Tag" })}
-                onClick={() => {
-                  if (currentStage === "Back Tag") {
-                    setStage("Front Tag" as StepStates["stage"]);
-                  } else {
-                    setStage("Back Tag" as StepStates["stage"]);
-                  }
-                }}
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Go back
-              </Button>
-              {/* Next Button */}
-              <Button
-                type="button"
-                size="lg"
-                className={cn({
-                  hidden: currentStep === 0 || currentStage === "Scheduling",
-                })}
-                disabled={currentStep <= 1}
-                onClick={() => {
-                  if (currentStage === "Front Tag") {
-                    form.trigger().then((isValid) => {
-                      // check if zod schema is valid
-                      if (isValid) {
-                        if (currentStage === "Front Tag") {
-                          setStage("Back Tag" as StepStates["stage"]);
-                        } else {
-                          setStage("Scheduling" as StepStates["stage"]);
-                        }
-                        incrementStep();
-                      }
-                    });
-                  }
-                  if (currentStage === "Back Tag") {
-                    setStage("Scheduling" as StepStates["stage"]);
-                    incrementStep();
-                  }
-                }}
-              >
-                Continue <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                size="lg"
-                disabled={extractingText}
-                className={cn("hidden", {
-                  flex: defaultValues || currentStage === "Scheduling",
-                })}
-              >
-                {defaultValues ? "Update Tag" : "Schedule reminder"}
-                <Wand2 className="w-4 h-4 ml-2" />
-              </Button>
+            <div
+              className={cn(
+                "w-full flex flex-row space-x-2 md:flex-row",
+                { "justify-center": currentStage === StageName.FrontTag },
+                {
+                  "justify-around md:justify-center":
+                    currentStage === StageName.BackTag,
+                },
+                {
+                  "justify-between md:justify-center":
+                    currentStage === StageName.Scheduling,
+                }
+              )}
+            >
+              <FormButton
+                loading={extractingText}
+                step={currentStep}
+                stage={currentStage}
+                aiTagData={aiTagData}
+                defaultValues={defaultValues}
+                onSubmit={onSubmit}
+              />
             </div>
           </form>
         </Form>

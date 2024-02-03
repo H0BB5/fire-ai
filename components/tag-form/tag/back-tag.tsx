@@ -22,7 +22,7 @@ export const BackTagStep = () => {
         control={form.control}
         render={({ field }) => (
           <FormItem className="flex flex-col items-center justify-center space-y-4 ">
-            <FormLabel className="text-lg mt-8">
+            <FormLabel className="text-lg mt-8 w-full">
               <Attention
                 labels={["Back Tag"]}
                 color="blue"

@@ -96,6 +96,7 @@ export const TagFormBody = () => {
               <RadioGroup
                 value={field.value}
                 onValueChange={(value) => {
+                  field.onChange(value);
                   setValue("type", value);
                 }}
               >
