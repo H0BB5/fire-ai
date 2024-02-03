@@ -49,10 +49,7 @@ export const Tag = pgTable("tag", {
 
   name: text("name"),
   type: text("type"),
-  location: text("location"),
   expiration: timestamp("expiration"),
-  serial: text("serial"),
-  rating: integer("rating"),
   photoFrontUrl: text("photo_front_url"),
   photoBackUrl: text("photo_back_url"),
 

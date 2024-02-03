@@ -8,8 +8,6 @@ interface FireTag {
   name: string;
   address: string;
   equipment: EQUIPMENT;
-  serial: string;
-  location: string;
   unit: string;
   size: string;
   expiration: Date;

@@ -67,10 +67,7 @@ model Tag {
   // Tag Info:
   businessName   String     @db.Text
   type           String
-  location       String
   expirationDate DateTime?
-  serial         String
-  rating         String
 
   // photos:
   frontTagSrc String

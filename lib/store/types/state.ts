@@ -22,9 +22,6 @@ export interface ExtractedData {
   businessName: string;
   address: string;
   type: string;
-  location: string;
-  serial: string;
-  rating: string;
   lastTestDate: Date;
 }
 

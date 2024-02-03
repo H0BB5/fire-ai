@@ -22,19 +22,6 @@ export const TagFormSkeleton = () => {
           <Skeleton className={`mt-2 h-4 w-1/2 md:w-1/3 ${shimmer}`} />
           <Skeleton className={`mb-1 mt-2 h-10 w-full ${shimmer}`} />
         </div>
-        <div className="col-span-2 md:col-span-1">
-          <Skeleton className={`mt-2 h-4 w-1/2 md:w-5/12 ${shimmer}`} />
-          <Skeleton className={`mb-1 mt-2 h-10 w-full ${shimmer}`} />
-        </div>
-        <div className="col-span-2 md:col-span-1">
-          <Skeleton className={`mt-2 h-4 w-1/2 md:w-1/3 ${shimmer}`} />
-          <Skeleton className={`mb-1 mt-2 h-10 w-full ${shimmer}`} />
-        </div>
-        <div className="col-span-2 md:col-span-1">
-          <Skeleton className={`mt-2 h-4 w-1/2 md:w-1/3 ${shimmer}`} />
-          <Skeleton className={`mb-1 mt-2 h-10 w-full ${shimmer}`} />
-        </div>
-        <Skeleton className={`mt-[0.5rem] md:mt-0 h-10 w-[280px] ${shimmer}`} />
       </div>
       {/* TECHNICIAN NOTES */}
       <div className="space-y-2 w-full">

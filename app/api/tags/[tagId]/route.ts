@@ -16,9 +16,6 @@ export async function PATCH(
       businessName,
       customer,
       type,
-      location,
-      serial,
-      rating,
       // expiration
     } = body;
 
@@ -28,7 +25,7 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!businessName || !type || !location || !serial || !rating) {
+    if (!businessName || !type) {
       return new NextResponse("Bad Request", { status: 400 });
     }
 
@@ -78,9 +75,6 @@ export async function PATCH(
         },
         businessName: businessName,
         type,
-        location,
-        serial,
-        rating,
         frontTagSrc,
       },
     });

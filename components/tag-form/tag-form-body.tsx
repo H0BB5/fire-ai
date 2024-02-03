@@ -24,9 +24,6 @@ type TagExtraction = {
   businessName: string;
   address: string;
   type: EQUIPMENT;
-  location: string;
-  serial: string;
-  rating: string;
   lastTestDate: Date | undefined;
 };
 
@@ -140,66 +137,6 @@ export const TagFormBody = () => {
               {/* <FormDescription>
                     Select the type of equipment the tag is for
                   </FormDescription> */}
-            </FormItem>
-          )}
-        />
-        {/* LOCATION  */}
-        <FormField
-          name="location"
-          control={control}
-          render={({ field }) => (
-            <FormItem className="col-span-2 md:col-span-1">
-              <FormLabel>Equipment Location</FormLabel>
-              <FormControl>
-                <Input
-                  disabled={isLoading}
-                  placeholder="Location of tag"
-                  {...field}
-                  ref={field.ref}
-                />
-              </FormControl>
-              <FormDescription></FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* SERIAL NUMBER  */}
-        <FormField
-          name="serial"
-          control={control}
-          render={({ field }) => (
-            <FormItem className="col-span-2 md:col-span-1">
-              <FormLabel>Serial Number</FormLabel>
-              <FormControl>
-                <Input
-                  disabled={isLoading}
-                  placeholder="Enter Serial Number"
-                  {...field}
-                  ref={field.ref}
-                />
-              </FormControl>
-              <FormDescription></FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* RATING  */}
-        <FormField
-          name="rating"
-          control={control}
-          render={({ field }) => (
-            <FormItem className="col-span-2 md:col-span-1">
-              <FormLabel>Rating</FormLabel>
-              <FormControl>
-                <Input
-                  disabled={isLoading}
-                  placeholder="Enter Rating"
-                  {...field}
-                  ref={field.ref}
-                />
-              </FormControl>
-              <FormDescription></FormDescription>
-              <FormMessage />
             </FormItem>
           )}
         />

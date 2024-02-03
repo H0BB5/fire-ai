@@ -34,9 +34,6 @@ const transformResponse = (response: any) => {
     businessName: response.customerName,
     address: response.address,
     type: response.type,
-    location: response.location,
-    serial: response.serial,
-    rating: response.rating,
     lastTestDate: response.lastTestDate, // handle date conversion
   };
 };

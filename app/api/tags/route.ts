@@ -16,9 +16,6 @@ export async function POST(req: Request) {
       businessName,
       customer,
       type,
-      location,
-      serial,
-      rating,
       notificationMethods,
       sendDate,
     } = body;
@@ -37,7 +34,7 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!businessName || !address || !type || !location || !serial || !rating) {
+    if (!businessName || !address || !type) {
       return new NextResponse("Bad Request", { status: 400 });
     }
 
@@ -78,9 +75,6 @@ export async function POST(req: Request) {
         },
         businessName,
         type,
-        location,
-        serial,
-        rating,
         frontTagSrc,
         backTagSrc,
       },

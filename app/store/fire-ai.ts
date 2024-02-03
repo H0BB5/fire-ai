@@ -11,9 +11,6 @@ type TagExtraction = {
   businessName: string;
   address: string;
   type: EQUIPMENT;
-  location: string;
-  serial: string;
-  rating: string;
   lastTestDate: Date | undefined;
 };
 

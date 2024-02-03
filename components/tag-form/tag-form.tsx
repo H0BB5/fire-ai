@@ -54,15 +54,6 @@ export const formSchema = z.object({
   type: z.string().min(1, {
     message: "Equipment Type is required",
   }),
-  location: z.string().min(1, {
-    message: "Equipment Location is required",
-  }),
-  serial: z.string().min(1, {
-    message: "Serial Number is required",
-  }),
-  rating: z.string().min(1, {
-    message: "Rating is required",
-  }),
   backTagSrc: z.string().optional(),
   notificationMethods: z.array(z.string()).optional(),
   sendDate: z.date().optional(),
@@ -91,9 +82,6 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
       frontTagSrc: "",
       businessName: "",
       type: "",
-      location: "",
-      serial: "",
-      rating: "",
       customer: {
         address: "",
         technicianNotes: "",
@@ -110,9 +98,6 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
       setValue("frontTagSrc", defaultValues.frontTagSrc);
       setValue("businessName", defaultValues.businessName);
       setValue("type", defaultValues.type);
-      setValue("location", defaultValues.location);
-      setValue("serial", defaultValues.serial);
-      setValue("rating", defaultValues.rating);
       setValue("customer.address", addressValue);
       setValue("customer.technicianNotes", technicianNotesValue);
     }
@@ -124,9 +109,6 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
       setValue("businessName", aiTagData.businessName);
       setValue("customer.address", aiTagData.address);
       setValue("type", aiTagData.type);
-      setValue("location", aiTagData.location);
-      setValue("serial", aiTagData.serial);
-      setValue("rating", aiTagData.rating);
       //form.setValue('lastTestDate', aiTagData.lastTestDate);
     }
   }, [setValue, aiTagData, incrementStep]);

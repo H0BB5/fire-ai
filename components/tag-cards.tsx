@@ -53,9 +53,9 @@ export const TagCards = ({ data }: CustomerProps) => {
                   <p className="flex items-center text-xs">
                     <Flame className="w-3 h-3 mr-1" /> {item.type}
                   </p>
-                  <p className="flex items-center text-xs mb-2">
+                  <p className="flex items-start text-xs mt-2 mb-2">
                     <MapPin className="w-3 h-3 mr-1" />
-                    {item.location}
+                    {item.customer.address}
                   </p>
 
                   <div className="flex items-center">

@@ -28,9 +28,6 @@ export const extractText = async (imageUrl: string) => {
     businessName: aiExtract.customerName,
     address: aiExtract.address,
     type: aiExtract.type,
-    location: aiExtract.location,
-    serial: aiExtract.serial,
-    rating: aiExtract.rating,
     lastTestDate: aiExtract.lastTestDate,
   });
 

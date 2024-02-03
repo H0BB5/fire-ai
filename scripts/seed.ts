@@ -56,10 +56,7 @@ async function main() {
         tagId,
         businessName: customer.businessName,
         type: "Fire Extinguisher",
-        location: "Office",
         expirationDate: currentDate, // Today
-        serial: "SN123456",
-        rating: "A",
         frontTagSrc: "http://placehold.co/300x300/000000/fff.jpg",
         backTagSrc: "http://placehold.co/300x300/444444/fff.jpg",
         technician: {
