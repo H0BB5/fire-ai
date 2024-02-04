@@ -55,11 +55,11 @@ export interface BackTagActions {
 
 export interface TagState {
   data: ExtractedData | null;
-  sendDate: Date | string;
+  tagExpiration: Date | string;
 }
 export interface TagDataActions {
   setTagData: (data: ExtractedData) => void;
-  setSendDate: (date: Date | string) => void;
+  setTagExpiration: (date: Date | string) => void;
   reset: () => void;
 }
 

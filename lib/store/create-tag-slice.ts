@@ -75,15 +75,15 @@ const createTagDataSlice: StateCreator<
   TagDataSlice
 > = (set) => ({
   data: null,
-  sendDate: new Date(),
+  tagExpiration: new Date(),
   setTagData: (data: ExtractedData) => {
     set({ data }, false, "Tag Data Set");
   },
-  setSendDate: (date: string | Date) => {
-    set({ sendDate: date }, false, "Notification Date Set");
+  setTagExpiration: (date: string | Date) => {
+    set({ tagExpiration: date }, false, "Notification Date Set");
   },
   reset: () => {
-    set({ data: null, sendDate: new Date() }, false, "Reset Tag Data");
+    set({ data: null, tagExpiration: new Date() }, false, "Reset Tag Data");
   },
 });
 
@@ -100,8 +100,8 @@ export const setTagData = (data: ExtractedData) => {
   useTagDataStore.setState({ data }, false, "Set Tag Data");
 };
 
-export const setTagSendDate = (date: Date) => {
-  useTagDataStore.setState({ sendDate: date }, false, "Set Tag Send Date");
+export const setTagExpiration = (date: Date) => {
+  useTagDataStore.setState({ tagExpiration: date }, false, "Set Tag Send Date");
 };
 
 const createMultiSlice: StateCreator<

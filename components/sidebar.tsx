@@ -41,7 +41,7 @@ export const Sidebar = () => {
               onClick={() => onNavigate(route.href)}
               key={route.href}
               className={cn(
-                "select-none text-muted-foreground text-xs group flex p-2 w-full justify-start font-medium cursor-pointer hover:text-primary hover:bg-primary/10 rounded-lg transition",
+                "select-none text-foreground/80 text-xs group flex p-2 w-full justify-start font-medium cursor-pointer hover:text-primary hover:bg-primary/10 rounded-lg transition",
                 pathname === route.href && "bg-primary/10 text-primary"
               )}
             >

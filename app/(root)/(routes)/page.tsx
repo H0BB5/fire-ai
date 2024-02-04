@@ -2,7 +2,9 @@ import { Tags } from "@/components/tags";
 import { SearchInput } from "@/components/search-input";
 import prismadb from "@/lib/prismadb";
 import { TagCards } from "@/components/tag-cards";
-import { Tags as TagsIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { TagsIcon } from "lucide-react";
 
 /**
  * This is the dashboard page.
@@ -62,7 +64,16 @@ const RootPage = async ({ searchParams }: RootPageProps) => {
         </p>
       </div>
       <SearchInput />
-      <Tags data={tags} />
+      <div className="hidden md:block">
+        <Tags data={tags} />
+      </div>
+      <div className="flex md:hidden justify-center my-4">
+        <Button className="flex items-center my-4" asChild>
+          <Link href="/tag/new">
+            Add New Tag <TagsIcon className="w-4 h-4 ml-2" />
+          </Link>
+        </Button>
+      </div>
       <TagCards data={data} />
     </div>
   );

@@ -18,7 +18,7 @@ export const TagCards = ({ data }: CustomerProps) => {
         <div className="relative w-60 h-60">
           <Image fill className="grayscale" alt="Empty" src="/empty.png" />
         </div>
-        <p className="text-sm text-muted-foreground">No Tags found.</p>
+        <p className="text-sm text-foreground/80">No Tags found.</p>
       </div>
     );
 
@@ -32,7 +32,7 @@ export const TagCards = ({ data }: CustomerProps) => {
         >
           <Link href={`/tag/${item.id}`}>
             <div className="grid grid-rows-layout bg-card rounded-lg">
-              <CardHeader className="text-muted-foreground py-0 relative pt-3 px-3">
+              <CardHeader className="text-foreground/80 py-0 relative pt-3 px-3">
                 <span className="absolute top-3 right-3">
                   <TagIcon className="w-3 h-3" />
                 </span>
@@ -50,7 +50,7 @@ export const TagCards = ({ data }: CustomerProps) => {
                   />
                 </div>
               </div>
-              <CardFooter className="self-end text-xs text-muted-foreground pb-3 px-3">
+              <CardFooter className="self-end text-xs text-foreground/80 pb-3 px-3">
                 <div className="w-full">
                   <p className="flex items-center text-xs">
                     <Flame className="w-3 h-3 mr-1" /> {item.type}

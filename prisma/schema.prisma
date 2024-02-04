@@ -67,7 +67,7 @@ model Tag {
   // Tag Info:
   businessName   String     @db.Text
   type           String
-  expirationDate DateTime?
+  expirationDate DateTime
 
   // photos:
   frontTagSrc String

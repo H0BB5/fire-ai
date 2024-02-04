@@ -38,12 +38,11 @@ export const Tags = ({ data }: TagProps) => {
             py-4
             md:py-3
             rounded-md
-            bg-accent
             hover:opacity-75
             transition
             border
           `,
-          !tagId ? "bg-accent" : "bg-accent"
+          !tagId ? "bg-card" : "bg-card"
         )}
       >
         Newest

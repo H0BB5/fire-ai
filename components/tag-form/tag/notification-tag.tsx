@@ -1,5 +1,5 @@
 import {
-  setTagSendDate,
+  setTagExpiration,
   useMultiStepStore,
   useTagDataStore,
 } from "@/lib/store/create-tag-slice";
@@ -29,37 +29,35 @@ export const NotificationStep = () => {
     name: "notificationMethods",
   });
 
-  const sendDate = useWatch({
+  const tagExpiration = useWatch({
     control,
-    name: "sendDate",
+    name: "tagExpiration",
   });
 
   const handleChange = (value: string[]) => {
     setValue("notificationMethods", value);
   };
   const currentStage = useMultiStepStore((state) => state.stage);
-  const dateValue = getValues("sendDate");
-
-  const setSendDate = useTagDataStore((state) => state.setSendDate);
+  const dateValue = getValues("tagExpiration");
 
   useEffect(() => {
     setValue("notificationMethods", ["email"]);
   }, [setValue]);
 
   useEffect(() => {
-    if (sendDate) {
+    if (tagExpiration) {
       const utcMidnightDate = startOfDay(
         new Date(
           Date.UTC(
-            sendDate.getFullYear(),
-            sendDate.getMonth(),
-            sendDate.getDate()
+            tagExpiration.getFullYear(),
+            tagExpiration.getMonth(),
+            tagExpiration.getDate()
           )
         )
       );
-      setSendDate(utcMidnightDate);
+      setTagExpiration(utcMidnightDate);
     }
-  }, [sendDate, setSendDate, dateValue]);
+  }, [tagExpiration, dateValue]);
 
   useEffect(() => {
     const formValues = watch();
@@ -126,7 +124,7 @@ export const NotificationStep = () => {
           </div>
           <FormItem>
             <FormField
-              name="sendDate"
+              name="tagExpiration"
               control={control}
               render={({ field }) => (
                 <FormItem>
@@ -134,8 +132,8 @@ export const NotificationStep = () => {
                   <FormControl>
                     <DatePicker
                       {...field}
-                      name="sendDate"
-                      value={sendDate}
+                      name="tagExpiration"
+                      value={tagExpiration}
                       onChange={(date) => field.onChange(date)}
                     />
                   </FormControl>

@@ -17,11 +17,22 @@ export async function POST(req: Request) {
       customer,
       type,
       notificationMethods,
-      sendDate,
+      tagExpiration, // current expiration date of the tag
     } = body;
 
-    const convertDate = parseISO(sendDate);
-    const notificationDate = startOfDay(convertDate);
+    // Convert the tagExpiration string to a Date object and set it to the start of that day
+    const convertDate = parseISO(tagExpiration);
+    const expirationDate = startOfDay(convertDate);
+
+    // Calculate the sendDate as 90 days before the tagExpiration
+    let scheduledNotification = addDays(parseISO(tagExpiration), -90);
+    // If today's todays date is within 90 days of the tagExpiration, schedule the notification for today
+    if (scheduledNotification < new Date()) {
+      scheduledNotification = new Date();
+    }
+    // and set it to the start of that day
+    const sendDate = startOfDay(scheduledNotification);
+
     const methods =
       typeof notificationMethods === "string"
         ? [notificationMethods]
@@ -53,24 +64,47 @@ export async function POST(req: Request) {
       });
     }
 
+    // Try to find existing customer
+    const existingCustomer = await prismadb.customer.findUnique({
+      where: {
+        customerId: businessName,
+      },
+    });
+
+    // Get ID of existing customer if found
+    let customerId;
+    if (existingCustomer) {
+      customerId = existingCustomer.customerId;
+    } else {
+      const newCustomer = await prismadb.customer.create({
+        data: {
+          customerId: businessName,
+          businessName,
+          address,
+          technicianNotes,
+          technician: {
+            connect: { id: technicianRecord.id },
+          },
+        },
+      });
+      customerId = newCustomer.customerId;
+    }
+
     const tagId = uuidv4();
     // Create the tag with either a new customer or connect to an existing one
     const tag = await prismadb.tag
       .create({
         data: {
           tagId,
+          expirationDate,
+          businessName,
+          type,
           technician: {
             connect: { id: technicianRecord.id },
           },
           customer: {
-            create: {
-              customerId: businessName,
-              businessName: businessName,
-              address,
-              technicianNotes: technicianNotes,
-              technician: {
-                connect: { id: technicianRecord.id },
-              },
+            connect: {
+              customerId: customerId,
             },
           },
           notification: {
@@ -80,16 +114,15 @@ export async function POST(req: Request) {
               body: "Body",
               status: "Scheduled",
               method: notificationMethods,
-              sendDate: notificationDate,
+              sendDate: sendDate,
             },
           },
-          businessName,
-          type,
           frontTagSrc,
           backTagSrc,
         },
       })
       .catch((error) => {
+        console.error("[TAG_POST]", error);
         if (error.code === "P2002") {
           return NextResponse.json({
             status: 400,
@@ -98,6 +131,7 @@ export async function POST(req: Request) {
         }
       });
 
+    console.log(tag);
     return NextResponse.json(tag);
   } catch (error) {
     console.log("[TAG_POST]", error);

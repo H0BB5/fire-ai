@@ -14,8 +14,6 @@ import { useEffect } from "react";
 import { TagFormSkeleton } from "./tag-form-skeleton";
 import { TagFormBody } from "./tag-form-body";
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
-import { ArrowLeft, ArrowRight, Mail, Wand2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { FrontTagStep } from "./tag/front-tag";
 import {
@@ -24,7 +22,7 @@ import {
   useMultiStepStore,
   useTagDataStore,
 } from "@/lib/store/create-tag-slice";
-import { StageName, StepStates } from "@/lib/store/types/state";
+import { StageName } from "@/lib/store/types/state";
 import { BackTagStep } from "./tag/back-tag";
 import { NotificationStep } from "./tag/notification-tag";
 import { FormButton } from "./form-button/index";
@@ -58,7 +56,7 @@ export const formSchema = z.object({
   }),
   backTagSrc: z.string().optional(),
   notificationMethods: z.array(z.string()).optional(),
-  sendDate: z.date({
+  tagExpiration: z.date({
     required_error: "Make sure the expiration date is correct",
   }),
 });
@@ -89,7 +87,7 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
       },
       backTagSrc: defaultValues?.backTagSrc || "",
       notificationMethods: [],
-      sendDate: defaultValues?.notification?.sendDate || undefined,
+      tagExpiration: defaultValues?.expirationDate || undefined,
     },
   });
   const { setValue } = form;
@@ -100,7 +98,7 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
       setValue("businessName", defaultValues.businessName);
       setValue("type", defaultValues.type);
       setValue("customer.address", addressValue);
-      setValue("sendDate", defaultValues?.expirationDate || new Date());
+      setValue("tagExpiration", defaultValues?.expirationDate || new Date());
       setValue("customer.technicianNotes", technicianNotesValue);
     }
   }, [defaultValues, addressValue, technicianNotesValue, setValue]);
@@ -146,7 +144,7 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
       },
       backTagSrc: "",
       notificationMethods: [],
-      sendDate: new Date(),
+      tagExpiration: new Date(),
     });
     resetForm();
     router.refresh();
