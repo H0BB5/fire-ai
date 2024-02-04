@@ -19,6 +19,9 @@ module.exports = withUt({
       },
     },
     extend: {
+      gridTemplateRows: {
+        layout: "auto 1fr auto",
+      },
       colors: {
         vercel: {
           pink: "#FF0080",

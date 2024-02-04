@@ -7,11 +7,9 @@ export async function PATCH(
   req: Request,
   { params }: { params: { customerId: string } }
 ) {
-  console.log("customer PATCH", params);
   try {
     const body = await req.json();
     const technician = await currentUser();
-    console.log("customer PATCH", body);
     const {
       businessName,
       address,
@@ -76,7 +74,6 @@ export async function PATCH(
 
     return NextResponse.json(tag);
   } catch (error) {
-    console.log("[CUSTOMER_PATCH]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
@@ -113,7 +110,6 @@ export async function DELETE(
 
     return NextResponse.json(tag);
   } catch (error) {
-    console.log("[CUSTOMER_DELETE]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

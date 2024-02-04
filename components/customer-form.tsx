@@ -73,7 +73,6 @@ export const CustomerForm = ({ tags, initialData }: CustomerFormProps) => {
       router.refresh();
       router.push(`/customer/${response.data.id}`);
     } catch (err) {
-      console.error(err, "Something went wrong");
       toast({
         variant: "destructive",
         description: "Something went wrong.",

@@ -130,8 +130,6 @@ export const UploadThing = ({
             <UploadButton
               endpoint="imageUploader"
               onClientUploadComplete={(res) => {
-                // Do something with the response
-                console.log("Files: ", res);
                 // set photo in state
                 setPhoto(res[0].url);
                 // set image value in react hook form

@@ -31,7 +31,6 @@ export function DatePicker({ initialDate, value, onChange, name }: Props) {
   useEffect(() => {
     if (value) {
       setDate(value);
-      console.log("DATE SET", value);
     }
   }, [value]);
 

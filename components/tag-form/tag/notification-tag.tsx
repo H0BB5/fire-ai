@@ -35,7 +35,6 @@ export const NotificationStep = () => {
   });
 
   const handleChange = (value: string[]) => {
-    console.log("VALUE", value);
     setValue("notificationMethods", value);
   };
   const currentStage = useMultiStepStore((state) => state.stage);
@@ -59,13 +58,11 @@ export const NotificationStep = () => {
         )
       );
       setSendDate(utcMidnightDate);
-      console.log("DATE VALUE", dateValue);
     }
   }, [sendDate, setSendDate, dateValue]);
 
   useEffect(() => {
     const formValues = watch();
-    console.log(formValues);
   }, [watch]);
 
   return (

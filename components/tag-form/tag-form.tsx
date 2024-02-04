@@ -66,15 +66,12 @@ export const formSchema = z.object({
 export const TagForm = ({ defaultValues }: CompanionFormProps) => {
   const totalSteps = 5;
   const currentStage = useMultiStepStore((state) => state.stage);
-  console.log("currentStage", currentStage);
   const currentStep = useMultiStepStore((state) => state.currentStep);
-  console.log("currentStep", currentStep);
   const incrementStep = useMultiStepStore((state) => state.increment);
   const setStage = useMultiStepStore((state) => state.setStage);
   const router = useRouter();
   const { toast } = useToast();
   const aiTagData = useTagDataStore((state) => state.data);
-  console.log(defaultValues);
   const { address, technicianNotes } = defaultValues?.customer || {};
   const addressValue = address === null ? "" : address;
   const technicianNotesValue = technicianNotes === null ? "" : technicianNotes;
@@ -120,8 +117,6 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
 
   const resetForm = useFormReset();
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-
     try {
       if (defaultValues) {
         // Update Ticket
@@ -136,7 +131,6 @@ export const TagForm = ({ defaultValues }: CompanionFormProps) => {
         description: "Success.",
       });
     } catch (err) {
-      console.error(err, "Something went wrong");
       toast({
         variant: "destructive",
         description: "Something went wrong.",

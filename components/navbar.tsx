@@ -21,7 +21,7 @@ export const Navbar = () => {
       <div className="flex items-center">
         <Link href="/">
           <Image
-            className={"dark:block hidden"}
+            className={"dark:block hidden h-auto"}
             src={"/alexander-safety-logo-light.svg"}
             alt="Alexander Safety Logo"
             width={58}
@@ -29,7 +29,7 @@ export const Navbar = () => {
             priority={true}
           />
           <Image
-            className={"dark:hidden block"}
+            className={"dark:hidden block h-auto"}
             src={"/alexander-safety-logo-dark.svg"}
             alt="Alexander Safety Logo"
             width={58}

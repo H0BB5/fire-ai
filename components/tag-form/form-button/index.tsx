@@ -30,9 +30,7 @@ export const FormButton = ({
   const form = useFormContext();
   const setStage = useMultiStepStore((state) => state.setStage);
   const incrementStep = useMultiStepStore((state) => state.increment);
-  console.log("currentStage", currentStage);
-  console.log("currentStep", currentStep);
-  console.log("defaultValues", defaultValues);
+
   return (
     <>
       {/* Back Button, only shown if not on the first stage */}
@@ -67,7 +65,6 @@ export const FormButton = ({
                   "type",
                 ])
                 .then((isValid) => {
-                  console.log(isValid);
                   if (isValid) {
                     const nextStage =
                       currentStage === StageName.FrontTag

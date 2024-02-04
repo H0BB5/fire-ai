@@ -6,7 +6,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FormField,
   FormItem,
@@ -24,15 +24,10 @@ import { Label } from "../ui/label";
 
 export const TagFormBody = () => {
   const { control, formState, getValues, setValue } = useFormContext();
+  const [tagType, setTagType] = useState<EQUIPMENT>();
+
   const isLoading = formState.isSubmitting;
-
-  useEffect(() => {
-    const defaultValue = getValues("type");
-
-    if (defaultValue) {
-      setValue("type", defaultValue);
-    }
-  }, [control, getValues, setValue]);
+  // get tagType from form
 
   return (
     <div className="space-y-8 pb-10">
@@ -94,7 +89,8 @@ export const TagFormBody = () => {
             <FormItem className="col-span-2 md:col-span-1">
               <FormLabel>Equipment Type</FormLabel>
               <RadioGroup
-                value={field.value}
+                {...field}
+                ref={field.ref}
                 onValueChange={(value) => {
                   field.onChange(value);
                   setValue("type", value);
@@ -103,15 +99,16 @@ export const TagFormBody = () => {
                 {equipmentTypes.map((equipment, i) => (
                   <div
                     key={equipment.type}
-                    className="flex items-center space-x-2"
+                    className="flex items-center space-x-2 hover:cursor-pointer"
                   >
                     <RadioGroupItem
-                      value={"type"}
+                      value={equipment.type}
                       id={`r${i}`}
-                      checked={field.value === equipment.type}
-                      className="hover:bg-primary/10 transition-colors ease-in-out transition-duration-200"
+                      className="hover:bg-primary/10 transition-colors ease-in-out transition-duration-200 "
                     />
-                    <Label htmlFor={`r${i}`}>{equipment.type}</Label>
+                    <Label className="cursor-pointer" htmlFor={`r${i}`}>
+                      {equipment.type}
+                    </Label>
                   </div>
                 ))}
               </RadioGroup>

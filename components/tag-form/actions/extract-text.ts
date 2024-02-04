@@ -21,7 +21,6 @@ export const extractText = async (imageUrl: string) => {
   const cleaned = response.replace(/`/g, "");
   const jsonString = cleaned.replace("json", "");
   const aiExtract = JSON.parse(jsonString);
-  console.log("OCR Response Body:", response); // Log the raw response body
   setTagData({
     frontTagSrc: imageUrl,
     nameOfTagIssuer: aiExtract.nameOfTagIssuer,
