@@ -1,17 +1,25 @@
+"use client";
+import React from "react";
+
 import { Customer, Tag, Technician } from "@prisma/client";
 import Image from "next/image";
 import { Card, CardHeader, CardFooter } from "./ui/card";
 import Link from "next/link";
-import { Flame, MapPin, SquareUser, Tag as TagIcon, Tags } from "lucide-react";
+import { Flame, MapPin, Tag as TagIcon, Trash } from "lucide-react";
+
+import { useRouter } from "next/navigation";
 
 interface CustomerProps {
   data: (Tag & {
     customer: Partial<Customer>;
     technician: Partial<Technician>;
   })[];
+  onDelete: (tagId: string) => void;
 }
 
-export const TagCards = ({ data }: CustomerProps) => {
+export const TagCards = ({ data, onDelete }: CustomerProps) => {
+  const router = useRouter();
+
   if (data.length === 0)
     return (
       <div className="pt-10 flex flex-col items-center justify-center space-y-3">
@@ -32,7 +40,7 @@ export const TagCards = ({ data }: CustomerProps) => {
         >
           <Link href={`/tag/${item.id}`}>
             <div className="grid grid-rows-layout bg-card rounded-lg">
-              <CardHeader className="text-foreground/80 py-0 relative pt-3 px-3">
+              <CardHeader className="text-center text-foreground/80 py-0 relative pt-3 px-3">
                 <span className="absolute top-3 right-3">
                   <TagIcon className="w-3 h-3" />
                 </span>
@@ -50,7 +58,7 @@ export const TagCards = ({ data }: CustomerProps) => {
                   />
                 </div>
               </div>
-              <CardFooter className="self-end text-xs text-foreground/80 pb-3 px-3">
+              <CardFooter className="relative self-end text-xs text-foreground/80 pb-3 px-3">
                 <div className="w-full">
                   <p className="flex items-center text-xs">
                     <Flame className="w-3 h-3 mr-1" /> {item.type}
@@ -59,7 +67,15 @@ export const TagCards = ({ data }: CustomerProps) => {
                     <MapPin className="w-3 h-3 mr-1" />
                     {item.customer.address}
                   </p>
-
+                  <span
+                    className="absolute bottom-3 right-3"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onDelete(item.id);
+                    }}
+                  >
+                    <Trash className="w-3 h-3" color={"tomato"} />
+                  </span>
                   {/* <div className="flex items-center">
                     {item._count.tags > 1 ? (
                       <Tags className="w-3 h-3 mr-1" />

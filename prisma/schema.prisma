@@ -55,8 +55,9 @@ model Customer {
 
 // When a tag is created a customer is created 
 model Tag {
-  id             String     @id @default(uuid())
-  tagId          String     @unique
+  id    String @id @default(uuid())
+  tagId String @unique
+
   // Technician who created this tag
   technicianId   String
   technician     Technician @relation(fields: [technicianId], references: [id])
@@ -88,7 +89,7 @@ model Tag {
 model Notification {
   id    String @id @default(uuid())
   tagId String
-  tag   Tag    @relation(fields: [tagId], references: [id])
+  tag   Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   // Customer Info: 
   customerId String

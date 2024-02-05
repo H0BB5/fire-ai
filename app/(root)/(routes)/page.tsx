@@ -1,10 +1,10 @@
 import { Tags } from "@/components/tags";
 import { SearchInput } from "@/components/search-input";
 import prismadb from "@/lib/prismadb";
-import { TagCards } from "@/components/tag-cards";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { TagsIcon } from "lucide-react";
+import { TagWrapper } from "./_components/tag-card-wrapper";
 
 /**
  * This is the dashboard page.
@@ -74,7 +74,7 @@ const RootPage = async ({ searchParams }: RootPageProps) => {
           </Link>
         </Button>
       </div>
-      <TagCards data={data} />
+      <TagWrapper initialTags={data} />
     </div>
   );
 };

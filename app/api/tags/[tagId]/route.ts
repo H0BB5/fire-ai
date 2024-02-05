@@ -90,33 +90,45 @@ export async function DELETE(
   req: Request,
   { params }: { params: { tagId: string } }
 ) {
+  console.log("DELETE!!!!", params);
   try {
     const technician = await auth();
 
-    // check if technician is logged in
+    // Check if technician is logged in
     if (!technician) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    // Check if tag exists
-    const tag = await prismadb.tag.findUnique({
-      where: {
-        id: params.tagId,
-      },
+    // Fetch the Tag with Customer and its Tags for checking
+    const tagWithCustomer = await prismadb.tag.findUnique({
+      where: { id: params.tagId },
+      include: { customer: { include: { tags: true } } }, // Include Customer and their Tags
     });
 
-    if (!tag) {
+    if (!tagWithCustomer) {
       return new NextResponse("Not Found", { status: 404 });
     }
 
-    // Delete the tag
-    await prismadb.tag.delete({
-      where: {
-        id: params.tagId,
-      },
+    const customerTagsCount = tagWithCustomer.customer.tags.length;
+
+    // Delete Notifications associated with the Tag
+    await prismadb.notification.deleteMany({
+      where: { tagId: params.tagId },
     });
 
-    return NextResponse.json(tag);
+    // Delete the Tag
+    await prismadb.tag.delete({
+      where: { id: params.tagId },
+    });
+
+    // If Customer has only this Tag, delete the Customer
+    if (customerTagsCount === 1) {
+      await prismadb.customer.delete({
+        where: { id: tagWithCustomer.customerId },
+      });
+    }
+
+    return NextResponse.json(tagWithCustomer);
   } catch (error) {
     console.log("[TAG_DELETE]", error);
     return new NextResponse("Internal Error", { status: 500 });
