@@ -65,31 +65,19 @@ export async function POST(req: Request) {
     }
 
     // Try to find existing customer
-    const existingCustomer = await prismadb.customer.findUnique({
+    const customerData = await prismadb.customer.findUnique({
       where: {
         customerId: businessName,
       },
     });
 
-    // Get ID of existing customer if found
     let customerId;
-    if (existingCustomer) {
-      customerId = existingCustomer.customerId;
-    } else {
-      const newCustomer = await prismadb.customer.create({
-        data: {
-          customerId: businessName,
-          businessName,
-          address,
-          technicianNotes,
-          technician: {
-            connect: { id: technicianRecord.id },
-          },
-        },
-      });
-      customerId = newCustomer.customerId;
-    }
 
+    if (customerData) {
+      customerId = customerData.customerId;
+    } else {
+      customerId = businessName;
+    }
     const tagId = uuidv4();
     // Create the tag with either a new customer or connect to an existing one
     const tag = await prismadb.tag
@@ -102,21 +90,19 @@ export async function POST(req: Request) {
           technician: {
             connect: { id: technicianRecord.id },
           },
-          customer: {
-            connect: {
-              customerId: customerId,
-            },
-          },
-          notification: {
-            create: {
-              customerId: businessName,
-              title: "Upcoming Tag Expiration for " + businessName,
-              body: "Body",
-              status: "Scheduled",
-              method: notificationMethods,
-              sendDate: sendDate,
-            },
-          },
+          customer: customerData
+            ? { connect: { id: customerData.id } }
+            : {
+                create: {
+                  customerId: businessName,
+                  businessName: businessName,
+                  address,
+                  technicianNotes: technicianNotes,
+                  technician: {
+                    connect: { id: technicianRecord.id },
+                  },
+                },
+              },
           frontTagSrc,
           backTagSrc,
         },
@@ -130,6 +116,27 @@ export async function POST(req: Request) {
           });
         }
       });
+
+    // Create a notification for the tag
+    const notification = await prismadb.notification.create({
+      data: {
+        tag: {
+          connect: {
+            tagId: tagId,
+          },
+        },
+        customer: {
+          connect: {
+            customerId: customerId,
+          },
+        },
+        title: "Upcoming Tag Expiration for " + businessName,
+        body: "Body",
+        status: "scheduled",
+        method: notificationMethods,
+        sendDate: sendDate,
+      },
+    });
 
     console.log(tag);
     return NextResponse.json(tag);

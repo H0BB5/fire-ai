@@ -1,8 +1,15 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Home, Tags, Settings, Building2 } from "lucide-react";
+import {
+  Home,
+  Tags,
+  Settings,
+  Building2,
+  MessageSquareDot,
+} from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+
 export const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
@@ -21,6 +28,11 @@ export const Sidebar = () => {
       icon: Building2,
       href: "/customer",
       label: "Customers",
+    },
+    {
+      icon: MessageSquareDot,
+      href: "/notifications",
+      label: "Notifications",
     },
     {
       icon: Settings,

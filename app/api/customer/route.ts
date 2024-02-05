@@ -13,6 +13,7 @@ export async function POST(req: Request) {
       businessName,
       address,
       type,
+      expirationDate,
       technicianNotes,
       // expiration
     } = body;
@@ -50,6 +51,7 @@ export async function POST(req: Request) {
     // Create the tag with either a new customer or connect to an existing one
     const tag = await prismadb.tag.create({
       data: {
+        expirationDate,
         technician: {
           connect: {
             id: technicianRecord.id,

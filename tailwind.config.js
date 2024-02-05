@@ -36,6 +36,8 @@ module.exports = withUt({
           blue200: "hsla(212.2, 100%, 59.8%, 1)",
           blue300: "hsla(212.35, 100%, 47.65%, 1)",
           blue400: "hsla(213.27, 93.52%, 42.35%, 1)",
+          scheduled: "hsla(41.09, 100%, 66.27%, 1)",
+          pending: "hsla(212.35, 100%, 47.65%, 1)",
 
           /* Error: */
           errorLighter: "hsla(349.69, 53.38%, 92.55%, 1)",
@@ -47,6 +49,7 @@ module.exports = withUt({
           successLighter: "hsla(195, 100%, 97.25%, 1)",
           successLight: "hsla(201.54, 100%, 71.78%, 1)",
           success: "hsla(208, 100%, 60.78%, 1)",
+          sent: "hsla(147, 100%, 39%, 1)",
           successDark: "hsla(204.94, 100%, 46.31%, 1)",
 
           /* Warning: */

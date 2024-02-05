@@ -51,10 +51,10 @@ export default async function sendEmail() {
           html: email.html,
         });
 
-        // Update notification status to "Sent"
+        // Update notification status to "sent"
         await prisma.notification.update({
           where: { id: email.notificationId },
-          data: { status: "Sent" },
+          data: { status: "sent" },
         });
       } catch (error) {
         console.error(

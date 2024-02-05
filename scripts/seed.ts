@@ -16,17 +16,16 @@ const futureDate = addDays(new Date(), 10);
 async function main() {
   try {
     const id = uuidv4();
-    const technicianId = uuidv4();
+    const technicianId = "dylanjhobbs@gmail.com";
     const tagId = uuidv4();
     const customerId = uuidv4();
-    const emailIndex = uuidv4();
 
     const technician = await db.technician.create({
       data: {
         id,
         technicianId,
         firstName: "John",
-        email: `technician${emailIndex}@email.com`,
+        email: `technician@email.com`,
       },
     });
 
@@ -87,7 +86,7 @@ async function main() {
         },
         title: "Reminder Title",
         body: "Body",
-        status: "Scheduled",
+        status: "scheduled",
         sendDate: currentDate, // today
         method: ["email", "sms"],
       },

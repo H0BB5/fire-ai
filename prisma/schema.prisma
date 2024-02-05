@@ -93,7 +93,7 @@ model Notification {
 
   // Customer Info: 
   customerId String
-  customer   Customer @relation(fields: [customerId], references: [id])
+  customer   Customer @relation(fields: [customerId], references: [customerId])
   // Notification Info:
   title      String
   body       String
