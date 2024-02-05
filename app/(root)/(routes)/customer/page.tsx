@@ -3,7 +3,7 @@ import { SearchInput } from "@/components/search-input";
 import prismadb from "@/lib/prismadb";
 import Customers from "@/components/customers";
 import { Building2 } from "lucide-react";
-
+export const dynamic = "force-dynamic";
 /**
  * This is the dashboard page.
  */

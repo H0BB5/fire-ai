@@ -128,7 +128,16 @@ export async function DELETE(
       });
     }
 
-    return NextResponse.json(tagWithCustomer);
+    // Optionally, after deleting the tag, fetch the updated list of tags
+    const updatedTags = await prismadb.tag.findMany({});
+
+    // Return the updated list of tags
+    return new NextResponse(JSON.stringify(updatedTags), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     console.log("[TAG_DELETE]", error);
     return new NextResponse("Internal Error", { status: 500 });

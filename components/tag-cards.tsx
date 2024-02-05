@@ -39,11 +39,20 @@ export const TagCards = ({ data, onDelete }: CustomerProps) => {
           className="bg-card cursor-pointer shadow-md hover:opacity-75 hover:shadow-lg transition p-px rounded-lg hover:rounded-sm border-gradient"
         >
           <Link href={`/tag/${item.id}`}>
-            <div className="grid grid-rows-layout bg-card rounded-lg">
+            <div className="grid grid-rows-layout bg-card rounded-lg relative">
+              <span className="absolute top-3 left-3">
+                <TagIcon className="w-3 h-3" />
+              </span>
+              <span
+                className="absolute right-3 top-3 mt-0 z-10"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onDelete(item.id);
+                }}
+              >
+                <Trash className="w-3 h-3" color={"tomato"} />
+              </span>
               <CardHeader className="text-center text-foreground/80 py-0 relative pt-3 px-3">
-                <span className="absolute top-3 right-3">
-                  <TagIcon className="w-3 h-3" />
-                </span>
                 <p className="font-semibold mt-0">{item.businessName}</p>
               </CardHeader>
               <div className="my-4 justify-self-center relative w-32 h-32">
@@ -63,19 +72,10 @@ export const TagCards = ({ data, onDelete }: CustomerProps) => {
                   <p className="flex items-center text-xs">
                     <Flame className="w-3 h-3 mr-1" /> {item.type}
                   </p>
-                  <p className="flex items-start text-xs mt-2">
+                  <p className="flex items-center align-center text-xs mt-2">
                     <MapPin className="w-3 h-3 mr-1" />
                     {item.customer.address}
                   </p>
-                  <span
-                    className="absolute bottom-3 right-3"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onDelete(item.id);
-                    }}
-                  >
-                    <Trash className="w-3 h-3" color={"tomato"} />
-                  </span>
                   {/* <div className="flex items-center">
                     {item._count.tags > 1 ? (
                       <Tags className="w-3 h-3 mr-1" />

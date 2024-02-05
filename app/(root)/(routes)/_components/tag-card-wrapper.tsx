@@ -5,6 +5,7 @@ import { DeleteDialog } from "@/components/delete-dialog";
 import axios from "axios";
 import { Customer, Tag, Technician } from "@prisma/client";
 import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 // Import other necessary hooks and components
 
 interface TagWrapperProps {
@@ -19,6 +20,7 @@ export const TagWrapper = ({ initialTags }: TagWrapperProps) => {
   const [selectedTagId, setSelectedTagId] = useState<string | null>(null);
   const [tags, setTags] = useState(initialTags);
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleDeleteClick = (tagId: string) => {
     setSelectedTagId(tagId);
@@ -31,9 +33,14 @@ export const TagWrapper = ({ initialTags }: TagWrapperProps) => {
 
   const handleConfirmDeletion = async (tagId: string) => {
     try {
-      await axios.delete(`/api/tags/${tagId}`);
+      const response = await axios.delete(`/api/tags/${tagId}`, {
+        data: { tagId },
+      });
+      router.push("/");
       // Update the state to reflect the deletion
-      setTags(tags.filter((t) => t.tagId !== selectedTagId));
+      const updatedTags = response.data;
+
+      setTags(updatedTags);
 
       setIsDialogOpen(false);
       toast({
@@ -42,7 +49,9 @@ export const TagWrapper = ({ initialTags }: TagWrapperProps) => {
       // Optionally, show a success message
     } catch (error) {
       console.error("Failed to delete tag", error);
-      // Optionally, show an error message
+      toast({
+        description: "Failed to delete tag!",
+      });
     }
   };
 
