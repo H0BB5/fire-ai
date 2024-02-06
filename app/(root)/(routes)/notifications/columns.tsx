@@ -58,7 +58,7 @@ export const columns: ColumnDef<Notification>[] = [
     cell: ({ row }) => {
       const notificationStatus = row.getValue("status") as string;
       return (
-        <Badge variant="outline" className="capitalize relative">
+        <Badge variant="outline" className="capitalize relative text-semibold">
           {row.getValue("status")}
         </Badge>
       );

@@ -36,7 +36,7 @@ export const TagCards = ({ data, onDelete }: CustomerProps) => {
       {data.map((item) => (
         <Card
           key={item.id}
-          className="bg-card cursor-pointer shadow-md hover:opacity-75 hover:shadow-lg transition p-px rounded-lg hover:rounded-sm border-gradient"
+          className="bg-card cursor-pointer shadow-md hover:opacity-75 hover:shadow-lg transition p-px rounded-lg hover:rounded-sm border-gradient w-full md:max-w-1/2 lg:max-w-1/3 xl:max-w-1/4 xl:max-w-[21rem]"
         >
           <Link href={`/tag/${item.id}`}>
             <div className="grid grid-rows-layout bg-card rounded-lg relative">
@@ -61,7 +61,7 @@ export const TagCards = ({ data, onDelete }: CustomerProps) => {
                     sizes={"w-auto h-full"}
                     src={item.frontTagSrc}
                     fill
-                    className="rounded-xl"
+                    className="rounded-xl object-cover"
                     alt="customer"
                     style={{ width: "100%", height: "100%" }}
                   />
