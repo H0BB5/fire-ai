@@ -38,7 +38,7 @@ export const TagWrapper = ({ initialTags }: TagWrapperProps) => {
       });
       router.push("/");
       // Update the state to reflect the deletion
-      const updatedTags = response.data;
+      const updatedTags = tags.filter((t) => t.id !== tagId);
 
       setTags(updatedTags);
 
